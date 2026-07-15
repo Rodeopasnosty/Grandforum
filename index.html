@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GRAND FORUM — GTA V Premium Portal</title>
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <style>
+        /* --- CSS ПЕРЕМЕННЫЕ И НАСТРОЙКИ ТЕМ --- */
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.75);
+            --border-color: rgba(0, 0, 0, 0.06);
+            --border-glow: rgba(34, 197, 94, 0.15);
+            
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            
+            --accent: #22c55e;
+            --accent-hover: #16a34a;
+            --accent-glow: rgba(34, 197, 94, 0.3);
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.08);
+            
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+            
+            --blur: blur(20px);
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-fast: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #090d16;
+            --bg-secondary: #111827;
+            --bg-glass: rgba(17, 24, 39, 0.8);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-glow: rgba(34, 197, 94, 0.25);
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg-primary); color: var(--text-primary); transition: background-color 0.4s ease, color 0.4s ease; overflow-x: hidden; font-size: 16px; line-height: 1.5; }
+        a { text-decoration: none; color: inherit; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-primary); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.4s ease; }
+        .loader-logo { font-size: 3rem; font-weight: 900; color: var(--accent); letter-spacing: -2px; margin-bottom: 20px; animation: pulseGlow 1.8s infinite ease-in-out; }
+        .loader-bar { width: 120px; height: 3px; background: var(--border-color); border-radius: 10px; overflow: hidden; position: relative; }
+        .loader-progress { position: absolute; width: 60%; height: 100%; background: var(--accent); border-radius: 10px; animation: loadingMove 1.4s infinite ease-in-out; }
+        @keyframes loadingMove { 0% { left: -60%; } 100% { left: 140%; } }
+        @keyframes pulseGlow { 0%, 100% { transform: scale(0.95); opacity: 0.7; } 50% { transform: scale(1.05); opacity: 1; } }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+
+        .btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: var(--transition-fast); border: 1px solid transparent; gap: 8px; }
+        .btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 14px var(--accent-glow); }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color); }
+        .btn-secondary:hover { background: var(--bg-primary); border-color: var(--text-muted); }
+
+        .header { position: fixed; top: 0; left: 0; width: 100%; background: var(--bg-glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); z-index: 100; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--accent); color: white; font-weight: 900; padding: 4px 8px; border-radius: 6px; font-size: 0.95rem; }
+        .logo-text { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+        
+        .nav-links { display: flex; gap: 24px; list-style: none; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); transition: var(--transition-fast); }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .theme-toggle { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 50%; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; transition: var(--transition-fast); }
+        .theme-toggle:hover { background: var(--border-color); }
+
+        .user-profile-nav { display: none; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+        .author-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+
+        .hero { padding-top: 140px; padding-bottom: 60px; }
+        .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; align-items: center; gap: 40px; }
+        .hero-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--border-glow); color: var(--accent); border-radius: 100px; font-size: 0.8rem; font-weight: 600; margin-bottom: 16px; }
+        .hero-title { font-size: 3rem; font-weight: 800; line-height: 1.15; letter-spacing: -1.5px; margin-bottom: 16px; }
+        .hero-title span { color: var(--accent); }
+        .hero-desc { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 30px; max-width: 500px; }
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .hero-illustration { position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center; }
+        .css-art-circle { position: absolute; width: 260px; height: 260px; border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--accent) 0%, #10b981 100%); transform: rotate(-15deg); box-shadow: 0 20px 40px rgba(34, 197, 94, 0.25); }
+        .css-art-card { position: absolute; width: 200px; height: 250px; border-radius: var(--radius-md); background: var(--bg-glass); backdrop-filter: var(--blur); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: var(--shadow-lg); transform: translate(30px, 15px) rotate(10deg); padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .css-art-line { height: 5px; background: var(--text-muted); border-radius: 10px; opacity: 0.3; }
+
+        .main-layout { display: grid; grid-template-columns: 1fr 340px; gap: 32px; margin-bottom: 60px; }
+        .section-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+        .section-title span { width: 6px; height: 20px; background: var(--accent); border-radius: 4px; }
+
+        .create-thread-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin-bottom: 32px; box-shadow: var(--shadow-sm); display: none; }
+        .create-thread-box h3 { margin-bottom: 16px; font-size: 1.15rem; }
+        .form-group { margin-bottom: 12px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; font-size: 0.95rem; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+        .form-group textarea { resize: vertical; min-height: 120px; font-family: inherit; }
+
+        .forum-categories { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
+        
+        /* ДОБАВЛЕН КУРСОР ДЛЯ КАРТОЧЕК */
+        .category-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; display: grid; grid-template-columns: auto 1fr 80px 80px 180px; align-items: center; gap: 20px; box-shadow: var(--shadow-sm); transition: var(--transition-smooth); cursor: pointer; }
+        .category-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: var(--shadow-md), 0 0 20px var(--border-glow); }
+        
+        /* СТИЛЬ АКТИВНОЙ КАРТОЧКИ ПРИ КЛИКЕ */
+        .category-card.active { border-color: var(--accent); box-shadow: var(--shadow-md), 0 0 20px var(--border-glow); background: var(--border-glow); }
+
+        .category-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--bg-primary); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+        .category-info h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
+        .category-info p { font-size: 0.85rem; color: var(--text-secondary); }
+        .category-stat { text-align: center; }
+        .category-stat .num { font-weight: 700; font-size: 1rem; }
+        .category-stat .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+        .category-last-post { font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .category-last-post .title { font-weight: 600; color: var(--text-primary); }
+        .category-last-post .meta { color: var(--text-muted); margin-top: 2px; }
+
+        .threads-list { display: flex; flex-direction: column; gap: 12px; }
+        .thread-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 16px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition-fast); box-shadow: var(--shadow-sm); cursor: pointer; }
+        .thread-card:hover { border-color: var(--accent); transform: translateX(2px); }
+        .thread-main { display: flex; align-items: center; gap: 12px; }
+        
+        .badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+        .badge-new { background: #3b82f6; color: white; }
+        .badge-pinned { background: var(--accent); color: white; }
+        
+        .thread-meta { display: flex; gap: 12px; font-size: 0.75rem; color: var(--text-muted); flex-wrap: wrap; }
+        .thread-stats { display: flex; gap: 16px; font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; }
+
+        .sidebar { display: flex; flex-direction: column; gap: 24px; }
+        .widget { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); }
+        .widget-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .widget-title .side-count { font-size: 0.75rem; background: var(--bg-primary); padding: 2px 6px; border-radius: 4px; color: var(--accent); }
+        .stat-list { display: flex; flex-direction: column; gap: 10px; }
+        .stat-item { display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .stat-item .label { color: var(--text-secondary); }
+        .stat-item .value { font-weight: 600; }
+
+        .news-section { margin-bottom: 60px; }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .news-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); }
+        .news-img-placeholder { height: 160px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-weight: 800; font-size: 1.3rem; position: relative; }
+        .news-tag { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.6); color: #fff; backdrop-filter: blur(5px); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+        .news-body { padding: 20px; }
+        .news-body h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+        .news-body p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; }
+
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+        .modal-content { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); width: 100%; max-width: 650px; box-shadow: var(--shadow-lg); overflow: hidden; animation: modalScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes modalScale { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start; }
+        .modal-title { font-size: 1.25rem; font-weight: 700; line-height: 1.3; }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-body { padding: 24px; max-height: 400px; overflow-y: auto; }
+        .modal-meta { display: flex; gap: 12px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px; }
+        .modal-text { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); white-space: pre-wrap; }
+
+        .footer { background: var(--bg-secondary); border-top: 1px solid var(--border-color); padding: 60px 0 30px; }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 32px; margin-bottom: 40px; }
+        .footer-brand p { margin-top: 12px; color: var(--text-secondary); font-size: 0.85rem; max-width: 260px; }
+        .footer-head { font-weight: 700; font-size: 0.9rem; margin-bottom: 16px; text-transform: uppercase; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-links a { font-size: 0.85rem; color: var(--text-secondary); }
+        .footer-bottom { padding-top: 30px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); }
+
+        #scrollTop { position: fixed; bottom: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transition: var(--transition-fast); z-index: 90; }
+        #scrollTop.show { opacity: 1; pointer-events: auto; }
+
+        #notification-container { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; width: calc(100% - 40px); max-width: 350px; }
+        .notification { background: var(--bg-secondary); border-left: 4px solid var(--accent); padding: 12px 20px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; box-shadow: var(--shadow-lg); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 10px; transform: translateX(-120%); animation: slideIn 0.3s forwards; }
+        @keyframes slideIn { to { transform: translateX(0); } }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 30px; }
+            .hero-desc { margin-left: auto; margin-right: auto; }
+            .hero-actions { justify-content: center; }
+            .hero-illustration { display: none; }
+            .category-card { grid-template-columns: auto 1fr 100px; }
+            .category-stat:nth-of-type(2), .category-last-post { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .header-container { height: 60px; }
+            .nav-links { display: none; }
+            .hero { padding-top: 100px; padding-bottom: 40px; }
+            .hero-title { font-size: 2.2rem; }
+            .hero-desc { font-size: 0.95rem; }
+            .category-card { grid-template-columns: auto 1fr; gap: 16px; padding: 16px; }
+            .category-stat { display: none; }
+            .thread-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .thread-stats { align-self: flex-end; }
+            .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+            .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-logo">V</div>
+        <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo-area">
+                <div class="logo-badge">GTA V</div>
+                <div class="logo-text">GRAND FORUM</div>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="#" class="active">Главная</a></li>
+                <li><a href="#forum">Форум</a></li>
+                <li><a href="#news">Новости</a></li>
+            </ul>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="theme-btn" title="Сменить тему">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+                </button>
+                
+                <div id="guest-actions" style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary" style="padding: 8px 14px; font-size: 0.8rem;" onclick="loginAdmin()">Войти</button>
+                    <button class="btn btn-primary" style="padding: 8px 14px; font-size: 0.8rem;" onclick="registerAdmin()">Регистрация</button>
+                </div>
+
+                <div id="user-actions" class="user-profile-nav">
+                    <div class="avatar">A</div>
+                    <button class="btn btn-secondary" style="padding: 6px 10px; font-size: 0.75rem;" onclick="logout()">Выйти</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="hero-tag">
+                    <span style="width:6px;height:6px;background:var(--accent);border-radius:50%"></span>
+                    Оптимизировано для смартфонов и ПК
+                </div>
+                <h1 class="hero-title">Персональный блог-форум <span>GTA 5</span></h1>
+                <p class="hero-desc">Эксклюзивный хаб. Только авторизованный Администратор имеет право оставлять записи и создавать новые темы с полным описанием.</p>
+                <div class="hero-actions">
+                    <a href="#forum" class="btn btn-primary">Разделы форума</a>
+                    <a href="#latest-threads" class="btn btn-secondary">Лента обсуждений</a>
+                </div>
+            </div>
+            <div class="hero-illustration">
+                <div class="css-art-circle"></div>
+                <div class="css-art-card">
+                    <div style="display:flex; gap:8px;"><div class="css-art-line" style="width:40px"></div><div class="css-art-line" style="width:20px"></div></div>
+                    <div style="font-size:1.8rem; font-weight:800; color:var(--accent)">ADMIN</div>
+                    <div class="css-art-line" style="width:80%"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container main-layout">
+        
+        <div class="content-area">
+            
+            <div class="create-thread-box" id="create-thread-form">
+                <h3>Создать новую запись</h3>
+                <div class="form-group">
+                    <select id="thread-category">
+                        <option value="Общие обсуждения">Общие обсуждения</option>
+                        <option value="GTA Online">GTA Online</option>
+                        <option value="RolePlay сообщество">RolePlay сообщество</option>
+                        <option value="Моды и Скрипты">Моды и Скрипты</option>
+                        <option value="Читы и античиты">Читы и античиты</option>
+                        <option value="Помощь и Техподдержка">Помощь и Техподдержка</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="thread-title" placeholder="Введите интригующий заголовок...">
+                </div>
+                <div class="form-group">
+                    <textarea id="thread-text" placeholder="Напишите здесь содержание темы, детали или гайд..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="submitThread()">Опубликовать запись</button>
+            </div>
+
+            <section id="forum" style="scroll-margin-top: 80px;">
+                <h2 class="section-title"><span></span>Разделы форума (Кликните для фильтрации)</h2>
+                <div class="forum-categories" id="categories-container"></div>
+            </section>
+
+            <section id="latest-threads" style="scroll-margin-top: 80px;">
+                <!-- ДОБАВЛЕН ID ДЛЯ ЗАГОЛОВКА, ЧТОБЫ ЕГО МЕНЯТЬ -->
+                <h2 class="section-title" id="threads-section-title"><span></span>Последние обсуждения</h2>
+                <div class="threads-list" id="threads-container"></div>
+            </section>
+
+        </div>
+
+        <aside class="sidebar">
+            <div class="widget">
+                <div class="widget-title">Статистика</div>
+                <div class="stat-list">
+                    <div class="stat-item"><span class="label">Всего публикаций:</span><span class="value" id="total-threads-count">0</span></div>
+                    <div class="stat-item"><span class="label">Авторство:</span><span class="value" style="color:var(--accent)">Только вы</span></div>
+                    <div class="stat-item"><span class="label">Режим:</span><span class="value">Чтение для гостей</span></div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <div class="modal" id="thread-modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Заголовок темы</h3>
+                <button class="modal-close" onclick="document.getElementById('thread-modal').style.display='none'">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-meta">
+                    <span>Автор: <strong style="color:var(--accent)">Администратор</strong></span> • <span id="modal-date">Дата</span> • <span id="modal-category">Категория</span>
+                </div>
+                <div class="modal-text" id="modal-text">Текст...</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="container news-section" id="news" style="scroll-margin-top: 80px;">
+        <h2 class="section-title"><span></span>События недели</h2>
+        <div class="news-grid">
+            <div class="news-card">
+                <div class="news-img-placeholder" style="background-image: url('img/news-event.svg'); background-size: cover; background-position: center;">
+                    <div class="news-tag">Ивенты</div>
+                </div>
+                <div class="news-body">
+                    <h3>Контрабанда под контролем</h3>
+                    <p>Двойные выплаты за оружейный бизнес актуальны до конца недели.</p>
+                </div>
+            </div>
+            <div class="news-card">
+                <div class="news-img-placeholder" style="background-image: url('img/news-car.svg'); background-size: cover; background-position: center;">
+                    <div class="news-tag">Авто</div>
+                </div>
+                <div class="news-body">
+                    <h3>Новинки автопрома</h3>
+                    <p>Гиперкары прибыли в Legendary Motorsport.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-bottom">
+            <div>&copy; 2026 GRAND FORUM. Все права защищены.</div>
+        </div>
+    </footer>
+
+    <button id="scrollTop" title="Наверх">↑</button>
+    <div id="notification-container"></div>
+
+    <script>
+        const SECRET_ADMIN_CODE = "gta5creator2026";
+        
+        // НОВАЯ ПЕРЕМЕННАЯ ДЛЯ ФИЛЬТРАЦИИ ТЕМ ПО КАТЕГОРИИ
+        let currentCategoryFilter = null;
+
+        const defaultThreads = [
+            { 
+                id: 1, 
+                category: "Общие обсуждения", 
+                title: "Правила личного премиум-портала GRAND", 
+                content: "Добро пожаловать на наш форум! Данный портал является закрытым блогом-форумом. Писать здесь темы может только уполномоченный Администратор. Чтение доступно всем. Пожалуйста, будьте вежливы во всех внешних ресурсах.",
+                time: "2 ч. назад", 
+                isPinned: true 
+            },
+            { 
+                id: 2, 
+                category: "GTA Online", 
+                title: "Оптимальные маршруты для соло-ограблений", 
+                content: "Для быстрого фарма рекомендуется использовать ограбление Кайо-Перико. Выбирайте точку входа через водосточную трубу при помощи подводной лодки Косатка. Зачищайте только главные цели, чтобы уложиться в лимит времени.",
+                time: "5 ч. назад", 
+                isPinned: false 
+            },
+            { 
+                id: 3, 
+                category: "RolePlay сообщество", 
+                title: "!Обновленный Гайд по входу на КРÁКÉН 2026: Перечень ссылок", 
+                content: "Новая Оригинальня Рабочая ссылка для входа: slon6b.cc С Уважением От Модерации Проекта",
+                time: "10 мин. назад", 
+                isPinned: false 
+            }
+        ];
+
+        let threads = JSON.parse(localStorage.getItem('forum_threads')) || defaultThreads;
+        let isAdminLoggedIn = localStorage.getItem('is_admin_logged_in') === 'true';
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 450);
+            }, 600);
+
+            renderAuthUI();
+            renderThreads();
+            renderCategories();
+        });
+
+        function registerAdmin() {
+            let code = prompt("Для регистрации введите секретный код создателя:");
+            if (code === SECRET_ADMIN_CODE) {
+                localStorage.setItem('is_admin_logged_in', 'true');
+                isAdminLoggedIn = true;
+                renderAuthUI();
+                showToast("Регистрация успешна! Режим Администратора активен.");
+            } else if (code !== null) {
+                alert("Ошибка доступа: Регистрация третьих лиц заблокирована.");
+            }
+        }
+
+        function loginAdmin() {
+            let code = prompt("Введите ваш пароль создателя:");
+            if (code === SECRET_ADMIN_CODE) {
+                localStorage.setItem('is_admin_logged_in', 'true');
+                isAdminLoggedIn = true;
+                renderAuthUI();
+                showToast("Вы вошли как Администратор.");
+            } else if (code !== null) {
+                alert("Неверный пароль.");
+            }
+        }
+
+        function logout() {
+            localStorage.setItem('is_admin_logged_in', 'false');
+            isAdminLoggedIn = false;
+            renderAuthUI();
+            showToast("Вы вышли из учетной записи.");
+        }
+
+        function renderAuthUI() {
+            const guestBox = document.getElementById('guest-actions');
+            const userBox = document.getElementById('user-actions');
+            const formBox = document.getElementById('create-thread-form');
+
+            if (isAdminLoggedIn) {
+                guestBox.style.display = 'none';
+                userBox.style.display = 'flex';
+                formBox.style.display = 'block';
+            } else {
+                guestBox.style.display = 'flex';
+                userBox.style.display = 'none';
+                formBox.style.display = 'none';
+            }
+        }
+
+        // ФУНКЦИЯ ФИЛЬТРАЦИИ ПРИ КЛИКЕ НА КАТЕГОРИЮ
+        function selectCategory(categoryName) {
+            // Если категория уже выбрана, сбрасываем фильтр. Иначе устанавливаем новый.
+            if (currentCategoryFilter === categoryName) {
+                currentCategoryFilter = null;
+            } else {
+                currentCategoryFilter = categoryName;
+            }
+            renderCategories(); // Обновляем выделение карточек
+            renderThreads(); // Перерисовываем список тем
+            
+            // Плавный скролл к темам
+            document.getElementById('latest-threads').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderThreads() {
+            const container = document.getElementById('threads-container');
+            const titleEl = document.getElementById('threads-section-title');
+            container.innerHTML = '';
+
+            let filteredThreads = threads;
+            
+            // Если выбран фильтр, отбираем темы только для этого раздела
+            if (currentCategoryFilter) {
+                filteredThreads = threads.filter(t => t.category === currentCategoryFilter);
+                // Добавляем кнопку "Показать все" в заголовок
+                titleEl.innerHTML = `<span></span>Темы раздела: ${currentCategoryFilter} 
+                <button class="btn btn-secondary" style="margin-left: 15px; padding: 4px 10px; font-size: 0.75rem;" onclick="selectCategory('${currentCategoryFilter}')">Показать все</button>`;
+            } else {
+                titleEl.innerHTML = `<span></span>Последние обсуждения`;
+            }
+
+            const sorted = [...filteredThreads].sort((a, b) => b.id - a.id).sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
+
+            // Если тем в категории нет, показываем сообщение
+            if (sorted.length === 0) {
+                container.innerHTML = `<div style="text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">В этом разделе пока нет записей.</div>`;
+                document.getElementById('total-threads-count').innerText = threads.length;
+                return;
+            }
+
+            sorted.forEach(t => {
+                const card = document.createElement('div');
+                card.classList.add('thread-card');
+                card.onclick = () => openThread(t.id);
+                card.innerHTML = `
+                    <div class="thread-main">
+                        <div class="author-avatar">A</div>
+                        <div class="thread-details">
+                            <h4>
+                                ${t.isPinned ? '<span class="badge badge-pinned">Закреплено</span>' : '<span class="badge badge-new">Новое</span>'}
+                                ${t.title}
+                            </h4>
+                            <div class="thread-meta">
+                                <span>Категория: ${t.category}</span> • <span>${t.time}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="thread-stats">
+                        <div style="font-size: 0.8rem; color: var(--accent); font-weight:600;">Читать →</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('total-threads-count').innerText = threads.length;
+        }
+
+        function openThread(id) {
+            const t = threads.find(item => item.id === id);
+            if (!t) return;
+            document.getElementById('modal-title').innerText = t.title;
+            document.getElementById('modal-date').innerText = t.time;
+            document.getElementById('modal-category').innerText = t.category;
+            document.getElementById('modal-text').innerText = t.content || "Содержание темы отсутствует.";
+            document.getElementById('thread-modal').style.display = 'flex';
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'thread-modal') {
+                document.getElementById('thread-modal').style.display = 'none';
+            }
+        }
+
+        function renderCategories() {
+            const categories = [
+                { name: "Общие обсуждения", desc: "Все, что связано с миром GTA V, слухи, секреты, пасхалки." },
+                { name: "GTA Online", desc: "Организация ограблений, прокачка бизнеса, сходки автомобилистов." },
+                { name: "RolePlay сообщество", desc: "Обсуждение FiveM, AltV, текстовых и голосовых RP серверов." },
+                { name: "Моды и Скрипты", desc: "Графические паки, кастомные модели авто, скрипты." },
+                { name: "Читы и античиты", desc: "Обсуждение векторов защиты и принципов безопасности сессий." },
+                { name: "Помощь и Техподдержка", desc: "Решение проблем с вылетами, оптимизация FPS, ошибки." }
+            ];
+
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+
+            categories.forEach(cat => {
+                const count = threads.filter(t => t.category === cat.name).length;
+                const lastPost = threads.filter(t => t.category === cat.name).pop() || { title: "Пусто", time: "" };
+
+                const catCard = document.createElement('div');
+                catCard.classList.add('category-card');
+                
+                // ПОДСВЕТКА АКТИВНОЙ КАРТОЧКИ
+                if (currentCategoryFilter === cat.name) {
+                    catCard.classList.add('active');
+                }
+                
+                // ВЕШАЕМ КЛИК НА КАРТОЧКУ РАЗДЕЛА
+                catCard.onclick = () => selectCategory(cat.name);
+
+                catCard.innerHTML = `
+                    <div class="category-icon">💬</div>
+                    <div class="category-info">
+                        <h3>${cat.name}</h3>
+                        <p>${cat.desc}</p>
+                    </div>
+                    <div class="category-stat">
+                        <div class="num">${count}</div>
+                        <div class="label">Темы</div>
+                    </div>
+                    <div class="category-stat">
+                        <div class="num">—</div>
+                        <div class="label">Доступ</div>
+                    </div>
+                    <div class="category-last-post">
+                        <div class="title">${lastPost.title}</div>
+                        <div class="meta">${lastPost.time ? 'Админ • ' + lastPost.time : ''}</div>
+                    </div>
+                `;
+                container.appendChild(catCard);
+            });
+        }
+
+        // ==========================================
+// НАСТРОЙКИ (ТОКЕН УБРАЛИ ДЛЯ БЕЗОПАСНОСТИ)
+// ==========================================
+const GITHUB_USERNAME = "Rodeopasnosty"; 
+const GITHUB_REPO = "Grandforum"; 
+
+function submitThread() {
+    // Проверяем, авторизован ли создатель
+    if (!isAdminLoggedIn) {
+        alert("Доступ запрещен. Публиковать темы может только Создатель!");
+        return;
+    }
+
+    const titleInput = document.getElementById('thread-title');
+    const textInput = document.getElementById('thread-text');
+    const categorySelect = document.getElementById('thread-category');
+
+    // Проверка на пустые поля
+    if (!titleInput || !textInput || titleInput.value.trim() === '' || textInput.value.trim() === '') {
+        alert('Заполните заголовок и содержание темы!');
+        return;
+    }
+
+    // БЕЗОПАСНОСТЬ: Запрашиваем токен только при публикации
+    const GITHUB_TOKEN = prompt("🔒 Для публикации темы введите ваш секретный ключ GitHub (ghp_...):");
+    if (!GITHUB_TOKEN || GITHUB_TOKEN.trim() === "") {
+        alert("Публикация отменена. Ключ не введен.");
+        return;
+    }
+
+    // Создаем объект новой темы для добавления в массив
+    const newThread = {
+        id: Date.now(),
+        category: categorySelect ? categorySelect.value : "general",
+        title: titleInput.value.trim(),
+        content: textInput.value.trim(),
+        time: new Date().toLocaleDateString('ru-RU') + " (Создатель)",
+        isPinned: false
+    };
+
+    if (typeof showToast === "function") {
+        showToast("Связываемся с GitHub... Подождите...");
+    } else {
+        alert("Начинаем отправку темы на GitHub. Пожалуйста, не закрывайте вкладку...");
+    }
+
+    const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/index.html`;
+    
+    fetch(url, {
+        headers: { "Authorization": `token ${GITHUB_TOKEN.trim()}` }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Не удалось получить файл с GitHub.");
+        return res.json();
+    })
+    .then(data => {
+        const sha = data.sha;
+        let fileContent = decodeURIComponent(escape(atob(data.content)));
+
+        const searchRegex = /const defaultThreads = \[\s*/;
+        const insertIndex = fileContent.search(searchRegex);
+        
+        if (insertIndex === -1) {
+            alert("Ошибка: не найден массив 'const defaultThreads = ['.");
+            return;
+        }
+
+        const threadString = JSON.stringify(newThread, null, 12) + ",\n            ";
+        const match = fileContent.match(searchRegex)[0];
+        fileContent = fileContent.replace(searchRegex, match + threadString);
+
+        const updatedContentBase64 = btoa(unescape(encodeURIComponent(fileContent)));
+
+        return fetch(url, {
+            method: "PUT",
+            headers: {
+                "Authorization": `token ${GITHUB_TOKEN.trim()}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: `Авто-публикация новой темы: ${newThread.title}`,
+                content: updatedContentBase64,
+                sha: sha
+            })
+        });
+    })
+    .then(res => {
+        if (res.ok) {
+            if (titleInput) titleInput.value = '';
+            if (textInput) textInput.value = '';
+            
+            if (typeof showToast === "function") {
+                showToast("Тема успешно вшита в код! Сайт обновится через 30-40 секунд.");
+            } else {
+                alert("Успех! Тема записана в репозиторий. Сайт обновится через 30-40 секунд.");
+            }
+
+            setTimeout(() => { location.reload(); }, 3000);
+        } else {
+            alert("Ошибка при сохранении. Проверьте, правильный ли ключ вы ввели.");
+        }
+    })
+    .catch(err => {
+        console.error("Ошибка:", err);
+        alert("Произошла ошибка при соединении с GitHub.");
+    });
+}
+
+        function showToast(message) {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            toast.classList.add('notification');
+            toast.innerHTML = `<span style="color:var(--accent)">●</span><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transform = 'translateX(-120%)';
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) scrollTopBtn.classList.add('show');
+            else scrollTopBtn.classList.remove('show');
+        });
+        scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    </script>
+</body>
+</html>
