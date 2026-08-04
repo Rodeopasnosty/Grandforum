@@ -361,19 +361,19 @@
 
             let filtered = allFiles;
             
-            // Если выбран фильтр, меняем заголовок ленты и добавляем кнопку сброса
+            // Если выбран фильтр, аккуратно настраиваем заголовок и кнопку сброса
             if (currentFilter) {
-                filtered = allFiles; // Здесь при необходимости можно фильтровать по имени файла
-                titleEl.innerHTML = `<div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                titleEl.innerHTML = `<div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
                     <div>Темы раздела: <span style="color: var(--accent);">${currentFilter}</span></div>
-                    <div><button class="btn btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="filterCat('${currentFilter}')">Показать все темы</button></div>
+                    <div><button class="btn btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button></div>
                 </div>`;
             } else {
                 titleEl.innerHTML = "Лента тем";
             }
 
             if (filtered.length === 0) {
-                container.innerHTML = "<div style='text-align: center; padding: 30px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-top: 10px;'>В этом разделе пока нет тем.</div>";
+                // Добавлен внешний отступ сверху (margin-top), чтобы текст не прилипал к заголовку
+                container.innerHTML = "<div style='text-align: center; padding: 24px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-top: 16px;'>В этом разделе пока нет тем.</div>";
                 return;
             }
 
