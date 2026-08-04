@@ -82,24 +82,44 @@
         .theme-toggle { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 50%; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; transition: var(--transition-fast); }
         .theme-toggle:hover { background: var(--border-color); }
 
-        .user-profile-nav { display: none; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem; }
-        .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
-
         .hero { padding-top: 140px; padding-bottom: 60px; }
         .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; align-items: center; gap: 40px; }
         .hero-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--border-glow); color: var(--accent); border-radius: 100px; font-size: 0.8rem; font-weight: 600; margin-bottom: 16px; }
         .hero-title { font-size: 3rem; font-weight: 800; line-height: 1.15; letter-spacing: -1.5px; margin-bottom: 16px; }
         .hero-title span { color: var(--accent); }
         .hero-desc { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 30px; max-width: 500px; }
-        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
         .hero-illustration { position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center; }
         .css-art-circle { position: absolute; width: 260px; height: 260px; border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--accent) 0%, #10b981 100%); transform: rotate(-15deg); box-shadow: 0 20px 40px rgba(34, 197, 94, 0.25); }
         .css-art-card { position: absolute; width: 200px; height: 250px; border-radius: var(--radius-md); background: var(--bg-glass); backdrop-filter: var(--blur); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: var(--shadow-lg); transform: translate(30px, 15px) rotate(10deg); padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
         .css-art-line { height: 5px; background: var(--text-muted); border-radius: 10px; opacity: 0.3; }
 
         .main-layout { display: grid; grid-template-columns: 1fr 340px; gap: 32px; margin-bottom: 60px; }
-        .section-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
-        .section-title span { width: 6px; height: 20px; background: var(--accent); border-radius: 4px; }
+        
+        /* Стили для заголовка секции и ровно 2 зеленых палочек */
+        .section-title { 
+            font-size: 1.4rem; 
+            font-weight: 700; 
+            letter-spacing: -0.5px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center; 
+            width: 100%;
+            border-bottom: none !important; 
+        }
+        .bar-group { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 4px; 
+            margin-right: 12px; 
+            flex-shrink: 0;
+        }
+        .bar { 
+            width: 5px; 
+            height: 22px; 
+            background: var(--accent); 
+            border-radius: 4px; 
+            display: block; 
+        }
 
         .create-thread-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin-bottom: 32px; box-shadow: var(--shadow-sm); display: none; }
         .create-thread-box h3 { margin-bottom: 16px; font-size: 1.15rem; }
@@ -111,13 +131,12 @@
         .forum-categories { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
         .category-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; display: grid; grid-template-columns: auto 1fr 180px; align-items: center; gap: 20px; box-shadow: var(--shadow-sm); transition: var(--transition-smooth); cursor: pointer; }
         .category-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: var(--shadow-md), 0 0 20px var(--border-glow); }
-        .category-card.active { border-color: var(--accent); box-shadow: var(--shadow-md), 0 0 20px var(--border-glow); background: var(--border-glow); }
 
         .category-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--bg-primary); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
         .category-info h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
         .category-info p { font-size: 0.85rem; color: var(--text-secondary); }
 
-        .threads-list { display: flex; flex-direction: column; gap: 12px; }
+        .threads-list { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 10px; }
         .thread-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 16px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition-fast); box-shadow: var(--shadow-sm); }
         .thread-item:hover { border-color: var(--accent); }
         .thread-item a { color: var(--accent); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
@@ -203,7 +222,10 @@
             </div>
 
             <section id="forum">
-                <h2 class="section-title"><span></span>Разделы форума</h2>
+                <h2 class="section-title">
+                    <span class="bar-group"><span class="bar"></span><span class="bar"></span></span>
+                    Разделы форума
+                </h2>
                 <div class="forum-categories">
                     <div class="category-card" onclick="filterCat('Общие обсуждения')">
                         <div class="category-icon">💬</div>
@@ -241,7 +263,9 @@
             </section>
 
             <section id="latest-threads">
-                <h2 class="section-title"><span id="filter-title-dot"></span><span id="threads-title-text">Лента тем</span></h2>
+                <div class="section-title" id="threads-header-title">
+                    <!-- Заголовок генерируется через JS -->
+                </div>
                 <div class="threads-list" id="threads-container">
                     <p style="color: var(--text-muted);">Загрузка тем из репозитория...</p>
                 </div>
@@ -290,7 +314,6 @@
             document.getElementById('theme-btn').textContent = next === 'dark' ? '☀️' : '🌙';
         }
 
-        // Восстановление темы при загрузке
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
             document.getElementById('theme-btn').textContent = '☀️';
@@ -345,43 +368,41 @@
         function filterCat(catName) {
             if (currentFilter === catName) {
                 currentFilter = null;
-                document.getElementById('threads-title-text').textContent = "Лента тем";
             } else {
                 currentFilter = catName;
-                document.getElementById('threads-title-text').textContent = "Темы в разделе: " + catName;
             }
             renderThreadsList();
             document.getElementById('latest-threads').scrollIntoView({ behavior: 'smooth' });
         }
 
-    function renderThreadsList() {
+        function renderThreadsList() {
             let container = document.getElementById('threads-container');
-            let titleEl = document.getElementById('threads-title-text');
+            let headerEl = document.getElementById('threads-header-title');
             container.innerHTML = "";
 
             let filtered = allFiles;
             
-            // Настраиваем заголовок вместе с зеленой полоской слева через flex, чтобы ничего не накладывалось
+            // Настройка заголовка: ровно 2 зеленые палочки, отступ от текста, кнопка сброса справа
             if (currentFilter) {
-                titleEl.innerHTML = `
+                headerEl.innerHTML = `
                     <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 12px;">
-                        <span style="display: flex; align-items: center; gap: 10px;">
-                            <span style="width: 6px; height: 20px; background: var(--accent); border-radius: 4px; display: inline-block;"></span>
+                        <span style="display: flex; align-items: center;">
+                            <span class="bar-group"><span class="bar"></span><span class="bar"></span></span>
                             <span>Темы раздела: <span style="color: var(--accent);">${currentFilter}</span></span>
                         </span>
-                        <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
                     </div>`;
             } else {
-                titleEl.innerHTML = `
-                    <span style="display: flex; align-items: center; gap: 10px;">
-                        <span style="width: 6px; height: 20px; background: var(--accent); border-radius: 4px; display: inline-block;"></span>
+                headerEl.innerHTML = `
+                    <span style="display: flex; align-items: center;">
+                        <span class="bar-group"><span class="bar"></span><span class="bar"></span></span>
                         <span>Лента тем</span>
                     </span>`;
             }
 
-            // Блок сообщения "нет тем" располагается ниже заголовка с гарантированным отступом
+            // Вывод сообщений или карточки "Нет тем" снизу заголовка без наложений
             if (filtered.length === 0) {
-                container.innerHTML = "<div style='text-align: center; padding: 24px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%; margin-top: 20px;'>В этом разделе пока нет тем.</div>";
+                container.innerHTML = "<div style='text-align: center; padding: 24px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%;'>В этом разделе пока нет тем.</div>";
                 return;
             }
 
@@ -397,6 +418,7 @@
                 `;
             });
         }
+
         async function createThread() {
             let title = document.getElementById('t-title').value.trim();
             let text = document.getElementById('t-text').value.trim();
