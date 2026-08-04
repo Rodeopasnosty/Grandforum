@@ -361,26 +361,27 @@
 
             let filtered = allFiles;
             
-            // Если выбран фильтр: делаем диагональное смещение (ступеньками) для строк заголовка
+            // Настраиваем заголовок вместе с зеленой полоской слева через flex, чтобы ничего не накладывалось
             if (currentFilter) {
                 titleEl.innerHTML = `
-                    <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                        <!-- Первая строка (название) -->
-                        <div style="font-size: 1.2rem; font-weight: 700;">
-                            Темы раздела: <span style="color: var(--accent);">${currentFilter}</span>
-                        </div>
-                        <!-- Вторая строка (кнопка), смещенная вправо для создания эффекта диагонали -->
-                        <div style="padding-left: 40px; transform: translateY(2px);">
-                            <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
-                        </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 12px;">
+                        <span style="display: flex; align-items: center; gap: 10px;">
+                            <span style="width: 6px; height: 20px; background: var(--accent); border-radius: 4px; display: inline-block;"></span>
+                            <span>Темы раздела: <span style="color: var(--accent);">${currentFilter}</span></span>
+                        </span>
+                        <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
                     </div>`;
             } else {
-                titleEl.innerHTML = "Лента тем";
+                titleEl.innerHTML = `
+                    <span style="display: flex; align-items: center; gap: 10px;">
+                        <span style="width: 6px; height: 20px; background: var(--accent); border-radius: 4px; display: inline-block;"></span>
+                        <span>Лента тем</span>
+                    </span>`;
             }
 
-            // Блок сообщения "нет тем" находится ниже заголовка благодаря естественному потоку документа и отступу
+            // Блок сообщения "нет тем" располагается ниже заголовка с гарантированным отступом
             if (filtered.length === 0) {
-                container.innerHTML = "<div style='text-align: center; padding: 24px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%; margin-top: 15px;'>В этом разделе пока нет тем.</div>";
+                container.innerHTML = "<div style='text-align: center; padding: 24px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%; margin-top: 20px;'>В этом разделе пока нет тем.</div>";
                 return;
             }
 
