@@ -356,16 +356,35 @@
 
         function renderThreadsList() {
             let container = document.getElementById('threads-container');
+            let titleEl = document.getElementById('threads-title-text');
             container.innerHTML = "";
 
             let filtered = allFiles;
+            
+            // Очищаем стандартный класс section-title внутри элемента, чтобы убрать старые полоски, и выстраиваем чистый блок
+            titleEl.parentElement.style.display = "flex";
+            titleEl.parentElement.style.flexDirection = "column";
+            titleEl.parentElement.style.alignItems = "flex-start";
+            titleEl.parentElement.style.gap = "15px";
+
             if (currentFilter) {
-                // Если фильтруем, проверим имя файла или просто выведем все
-                filtered = allFiles; 
+                titleEl.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 15px;">
+                        <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); line-height: 1.2;">
+                            Темы раздела: <span style="color: var(--accent);">${currentFilter}</span>
+                        </div>
+                        <button class="btn btn-secondary" style="padding: 6px 16px; font-size: 0.85rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
+                    </div>`;
+            } else {
+                titleEl.innerHTML = `
+                    <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary);">
+                        Лента тем
+                    </div>`;
             }
 
+            // Блок сообщения "нет тем" располагается ниже с четким отступом, исключая любые наложения
             if (filtered.length === 0) {
-                container.innerHTML = "<p style='color: var(--text-muted);'>В этом разделе пока нет тем.</p>";
+                container.innerHTML = "<div style='text-align: center; padding: 30px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%; margin-top: 10px;'>В этом разделе пока нет тем.</div>";
                 return;
             }
 
