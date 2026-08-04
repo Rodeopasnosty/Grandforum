@@ -354,26 +354,26 @@
             document.getElementById('latest-threads').scrollIntoView({ behavior: 'smooth' });
         }
 
-       function renderThreadsList() {
+      function renderThreadsList() {
             let container = document.getElementById('threads-container');
             let titleEl = document.getElementById('threads-title-text');
             container.innerHTML = "";
 
             let filtered = allFiles;
             
-            // Если выбран фильтр, аккуратно настраиваем заголовок и кнопку сброса
+            // Если выбран фильтр: заголовок и кнопка в одну строчку
             if (currentFilter) {
-                titleEl.innerHTML = `<div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
-                    <div>Темы раздела: <span style="color: var(--accent);">${currentFilter}</span></div>
-                    <div><button class="btn btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button></div>
+                titleEl.innerHTML = `<div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 10px;">
+                    <span>Темы раздела: <span style="color: var(--accent);">${currentFilter}</span></span>
+                    <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 0.75rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
                 </div>`;
             } else {
                 titleEl.innerHTML = "Лента тем";
             }
 
+            // Если тем нет, выводим сообщение строго ПОД заголовок с отступом
             if (filtered.length === 0) {
-                // Добавлен внешний отступ сверху (margin-top), чтобы текст не прилипал к заголовку
-                container.innerHTML = "<div style='text-align: center; padding: 24px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-top: 16px;'>В этом разделе пока нет тем.</div>";
+                container.innerHTML = "<div style='text-align: center; padding: 24px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%;'>В этом разделе пока нет тем.</div>";
                 return;
             }
 
