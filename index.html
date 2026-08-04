@@ -2,73 +2,320 @@
 <html lang="ru" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="yandex-verification" content="0bab8749f7716287" />
-    <title>GRAND FORUM - GTA V Premium Portal</title>
+    <title>GRAND FORUM — GTA V Premium Portal</title>
     <link rel="icon" href="favicon.png" type="image/png">
     <style>
-        :root { --bg-primary: #f8f9fa; --bg-secondary: #ffffff; --text-primary: #0f172a; --text-secondary: #475569; --text-muted: #94a3b8; --accent: #22c55e; --accent-hover: #16a34a; --border-color: rgba(0, 0, 0, 0.06); }
-        [data-theme="dark"] { --bg-primary: #090d16; --bg-secondary: #111827; --text-primary: #f8fafc; --text-secondary: #cbd5e1; --text-muted: #64748b; --border-color: rgba(255, 255, 255, 0.06); }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background-color: var(--bg-primary); color: var(--text-primary); padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; }
-        .btn { padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; background: var(--accent); color: white; }
-        .btn:hover { background: var(--accent-hover); }
-        .box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.75);
+            --border-color: rgba(0, 0, 0, 0.06);
+            --border-glow: rgba(34, 197, 94, 0.15);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent: #22c55e;
+            --accent-hover: #16a34a;
+            --accent-glow: rgba(34, 197, 94, 0.3);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.08);
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+            --blur: blur(20px);
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-fast: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #090d16;
+            --bg-secondary: #111827;
+            --bg-glass: rgba(17, 24, 39, 0.8);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-glow: rgba(34, 197, 94, 0.25);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg-primary); color: var(--text-primary); transition: background-color 0.4s ease, color 0.4s ease; overflow-x: hidden; font-size: 16px; line-height: 1.5; }
+        a { text-decoration: none; color: inherit; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-primary); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.4s ease; }
+        .loader-logo { font-size: 3rem; font-weight: 900; color: var(--accent); letter-spacing: -2px; margin-bottom: 20px; animation: pulseGlow 1.8s infinite ease-in-out; }
+        .loader-bar { width: 120px; height: 3px; background: var(--border-color); border-radius: 10px; overflow: hidden; position: relative; }
+        .loader-progress { position: absolute; width: 60%; height: 100%; background: var(--accent); border-radius: 10px; animation: loadingMove 1.4s infinite ease-in-out; }
+        @keyframes loadingMove { 0% { left: -60%; } 100% { left: 140%; } }
+        @keyframes pulseGlow { 0%, 100% { transform: scale(0.95); opacity: 0.7; } 50% { transform: scale(1.05); opacity: 1; } }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+
+        .btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: var(--transition-fast); border: 1px solid transparent; gap: 8px; }
+        .btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 14px var(--accent-glow); }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color); }
+        .btn-secondary:hover { background: var(--bg-primary); border-color: var(--text-muted); }
+
+        .header { position: fixed; top: 0; left: 0; width: 100%; background: var(--bg-glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); z-index: 100; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--accent); color: white; font-weight: 900; padding: 4px 8px; border-radius: 6px; font-size: 0.95rem; }
+        .logo-text { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+        
+        .nav-links { display: flex; gap: 24px; list-style: none; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); transition: var(--transition-fast); }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .theme-toggle { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 50%; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; transition: var(--transition-fast); }
+        .theme-toggle:hover { background: var(--border-color); }
+
+        .user-profile-nav { display: none; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+
+        .hero { padding-top: 140px; padding-bottom: 60px; }
+        .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; align-items: center; gap: 40px; }
+        .hero-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--border-glow); color: var(--accent); border-radius: 100px; font-size: 0.8rem; font-weight: 600; margin-bottom: 16px; }
+        .hero-title { font-size: 3rem; font-weight: 800; line-height: 1.15; letter-spacing: -1.5px; margin-bottom: 16px; }
+        .hero-title span { color: var(--accent); }
+        .hero-desc { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 30px; max-width: 500px; }
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .hero-illustration { position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center; }
+        .css-art-circle { position: absolute; width: 260px; height: 260px; border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--accent) 0%, #10b981 100%); transform: rotate(-15deg); box-shadow: 0 20px 40px rgba(34, 197, 94, 0.25); }
+        .css-art-card { position: absolute; width: 200px; height: 250px; border-radius: var(--radius-md); background: var(--bg-glass); backdrop-filter: var(--blur); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: var(--shadow-lg); transform: translate(30px, 15px) rotate(10deg); padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .css-art-line { height: 5px; background: var(--text-muted); border-radius: 10px; opacity: 0.3; }
+
+        .main-layout { display: grid; grid-template-columns: 1fr 340px; gap: 32px; margin-bottom: 60px; }
+        .section-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+        .section-title span { width: 6px; height: 20px; background: var(--accent); border-radius: 4px; }
+
+        .create-thread-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin-bottom: 32px; box-shadow: var(--shadow-sm); display: none; }
+        .create-thread-box h3 { margin-bottom: 16px; font-size: 1.15rem; }
         .form-group { margin-bottom: 12px; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; }
-        .form-group textarea { min-height: 100px; }
-        .thread-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .thread-item a { color: var(--accent); text-decoration: none; font-weight: bold; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; font-size: 0.95rem; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+        .form-group textarea { resize: vertical; min-height: 120px; font-family: inherit; }
+
+        .forum-categories { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
+        .category-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; display: grid; grid-template-columns: auto 1fr 180px; align-items: center; gap: 20px; box-shadow: var(--shadow-sm); transition: var(--transition-smooth); cursor: pointer; }
+        .category-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: var(--shadow-md), 0 0 20px var(--border-glow); }
+        .category-card.active { border-color: var(--accent); box-shadow: var(--shadow-md), 0 0 20px var(--border-glow); background: var(--border-glow); }
+
+        .category-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--bg-primary); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+        .category-info h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
+        .category-info p { font-size: 0.85rem; color: var(--text-secondary); }
+
+        .threads-list { display: flex; flex-direction: column; gap: 12px; }
+        .thread-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 16px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition-fast); box-shadow: var(--shadow-sm); }
+        .thread-item:hover { border-color: var(--accent); }
+        .thread-item a { color: var(--accent); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+        .thread-item a:hover { text-decoration: underline; }
+
+        .sidebar { display: flex; flex-direction: column; gap: 24px; }
+        .widget { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); }
+        .widget-title { font-size: 1rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+        .stat-list { display: flex; flex-direction: column; gap: 10px; }
+        .stat-item { display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .stat-item .label { color: var(--text-secondary); }
+        .stat-item .value { font-weight: 600; }
+
+        .footer { background: var(--bg-secondary); border-top: 1px solid var(--border-color); padding: 40px 0; margin-top: 40px; text-align: center; font-size: 0.85rem; color: var(--text-muted); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>GRAND FORUM</h1>
-            <div id="auth-area">
-                <button class="btn" onclick="loginAdmin()">Войти как Админ</button>
-            </div>
-        </header>
 
-        <div id="create-box" class="box" style="display: none;">
-            <h3>Создать новую тему</h3>
-            <div class="form-group" style="margin-top: 10px;">
-                <select id="t-cat"><option>Общие обсуждения</option><option>GTA Online</option></select>
-            </div>
-            <div class="form-group"><input type="text" id="t-title" placeholder="Заголовок темы"></div>
-            <div class="form-group"><textarea id="t-text" placeholder="Текст темы..."></textarea></div>
-            <button class="btn" onclick="createThread()">Опубликовать на GitHub</button>
-        </div>
-
-        <h2>Лента тем</h2>
-        <div id="threads-list" style="margin-top: 15px;">
-            <p style="color: var(--text-muted);">Загрузка тем...</p>
-        </div>
+    <div id="loader">
+        <div class="loader-logo">V</div>
+        <div class="loader-bar"><div class="loader-progress"></div></div>
     </div>
+
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo-area">
+                <div class="logo-badge">GTA V</div>
+                <div class="logo-text">GRAND FORUM</div>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="#" class="active">Главная</a></li>
+                <li><a href="#forum">Форум</a></li>
+            </ul>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="Сменить тему">🌙</button>
+                <div id="auth-area">
+                    <button class="btn btn-secondary" style="padding: 8px 14px; font-size: 0.8rem;" onclick="loginAdmin()">Войти</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="hero-tag">Официальный портал обсуждений</div>
+                <h1 class="hero-title">Персональный блог-форум <span>GTA 5</span></h1>
+                <p class="hero-desc">Здесь публикуются все важные новости, моды, гайды и обсуждения проекта.</p>
+            </div>
+            <div class="hero-illustration">
+                <div class="css-art-circle"></div>
+                <div class="css-art-card">
+                    <div style="font-size:1.5rem; font-weight:800; color:var(--accent)">ADMIN PANEL</div>
+                    <div class="css-art-line" style="width:100%"></div>
+                    <div class="css-art-line" style="width:60%"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container main-layout">
+        <div class="content-area">
+            
+            <div class="create-thread-box" id="create-thread-form">
+                <h3>Создать новую запись (отдельную страницу для Яндекса)</h3>
+                <div class="form-group">
+                    <select id="t-cat">
+                        <option>Общие обсуждения</option>
+                        <option>GTA Online</option>
+                        <option>RolePlay сообщество</option>
+                        <option>Моды и Скрипты</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="t-title" placeholder="Заголовок темы...">
+                </div>
+                <div class="form-group">
+                    <textarea id="t-text" placeholder="Текст темы..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="createThread()">Опубликовать на GitHub</button>
+            </div>
+
+            <section id="forum">
+                <h2 class="section-title"><span></span>Разделы форума</h2>
+                <div class="forum-categories">
+                    <div class="category-card" onclick="filterCat('Общие обсуждения')">
+                        <div class="category-icon">💬</div>
+                        <div class="category-info">
+                            <h3>Общие обсуждения</h3>
+                            <p>Разговоры на любые темы, связанные с миром GTA.</p>
+                        </div>
+                        <div style="text-align: right; font-size: 0.85rem; color: var(--accent);">Перейти →</div>
+                    </div>
+                    <div class="category-card" onclick="filterCat('GTA Online')">
+                        <div class="category-icon">🌐</div>
+                        <div class="category-info">
+                            <h3>GTA Online</h3>
+                            <p>Ограбления, советы по фарму, транспорт и сессии.</p>
+                        </div>
+                        <div style="text-align: right; font-size: 0.85rem; color: var(--accent);">Перейти →</div>
+                    </div>
+                    <div class="category-card" onclick="filterCat('RolePlay сообщество')">
+                        <div class="category-icon">👥</div>
+                        <div class="category-info">
+                            <h3>RolePlay сообщество</h3>
+                            <p>Отыгрыш ролей, гайды и актуальные ссылки.</p>
+                        </div>
+                        <div style="text-align: right; font-size: 0.85rem; color: var(--accent);">Перейти →</div>
+                    </div>
+                    <div class="category-card" onclick="filterCat('Моды и Скрипты')">
+                        <div class="category-icon">⚙️</div>
+                        <div class="category-info">
+                            <h3>Моды и Скрипты</h3>
+                            <p>Графические модификации, трейнеры и скрипты.</p>
+                        </div>
+                        <div style="text-align: right; font-size: 0.85rem; color: var(--accent);">Перейти →</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="latest-threads">
+                <h2 class="section-title"><span id="filter-title-dot"></span><span id="threads-title-text">Лента тем</span></h2>
+                <div class="threads-list" id="threads-container">
+                    <p style="color: var(--text-muted);">Загрузка тем из репозитория...</p>
+                </div>
+            </section>
+        </div>
+
+        <aside class="sidebar">
+            <div class="widget">
+                <div class="widget-title">Статистика</div>
+                <div class="stat-list">
+                    <div class="stat-item"><span class="label">Режим:</span><span class="value" style="color:var(--accent)">GitHub API</span></div>
+                    <div class="stat-item"><span class="label">Статус:</span><span class="value">Активен</span></div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            &copy; 2026 GRAND FORUM. Все права защищены.
+        </div>
+    </footer>
 
     <script>
         const REPO = "Rodeopasnosty/Grandforum"; // Ваш репозиторий
         const ADMIN_PASS = "gta5creator2026";
         let isAdmin = localStorage.getItem('isAdmin') === 'true';
+        let allFiles = [];
+        let currentFilter = null;
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 400);
+            }, 500);
+            updateAuthUI();
+            loadThreadsFromGitHub();
+        });
+
+        function toggleTheme() {
+            let html = document.documentElement;
+            let current = html.getAttribute('data-theme');
+            let next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            document.getElementById('theme-btn').textContent = next === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Восстановление темы при загрузке
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-btn').textContent = '☀️';
+        }
 
         function updateAuthUI() {
+            let authArea = document.getElementById('auth-area');
+            let formBox = document.getElementById('create-thread-form');
             if (isAdmin) {
-                document.getElementById('auth-area').innerHTML = '<button class="btn" onclick="logout()">Выйти</button>';
-                document.getElementById('create-box').style.display = 'block';
+                authArea.innerHTML = '<button class="btn btn-secondary" style="padding: 8px 14px; font-size: 0.8rem;" onclick="logout()">Выйти</button>';
+                formBox.style.display = 'block';
             } else {
-                document.getElementById('auth-area').innerHTML = '<button class="btn" onclick="loginAdmin()">Войти как Админ</button>';
-                document.getElementById('create-box').style.display = 'none';
+                authArea.innerHTML = '<button class="btn btn-secondary" style="padding: 8px 14px; font-size: 0.8rem;" onclick="loginAdmin()">Войти</button>';
+                formBox.style.display = 'none';
             }
         }
 
         function loginAdmin() {
-            if (prompt("Введите пароль администратора:") === ADMIN_PASS) {
+            let pass = prompt("Введите пароль администратора:");
+            if (pass === ADMIN_PASS) {
                 localStorage.setItem('isAdmin', 'true');
                 isAdmin = true;
                 updateAuthUI();
-            } else {
+                alert("Успешный вход!");
+            } else if (pass !== null) {
                 alert("Неверный пароль!");
             }
         }
@@ -79,37 +326,60 @@
             updateAuthUI();
         }
 
-        updateAuthUI();
-
-        // Загрузка списка тем прямо из репозитория GitHub через API
-        async function loadThreads() {
+        async function loadThreadsFromGitHub() {
             try {
                 let res = await fetch(`https://api.github.com/repos/${REPO}/contents/threads`);
                 let files = await res.json();
-                let listDiv = document.getElementById('threads-list');
-                listDiv.innerHTML = "";
-
-                if (!Array.isArray(files) || files.length === 0) {
-                    listDiv.innerHTML = "<p style='color: var(--text-muted);'>Тем пока нет.</p>";
-                    return;
+                
+                if (Array.isArray(files)) {
+                    allFiles = files.filter(f => f.name.endsWith('.html') && f.name !== '.gitkeep');
+                } else {
+                    allFiles = [];
                 }
-
-                files.forEach(file => {
-                    if (file.name.endsWith('.html')) {
-                        let title = decodeURIComponent(file.name.replace('.html', '').replace(/-/g, ' '));
-                        listDiv.innerHTML += `
-                            <div class="thread-item">
-                                <div>
-                                    <strong>${title}</strong>
-                                </div>
-                                <a href="threads/${file.name}" target="_blank">Открыть тему →</a>
-                            </div>
-                        `;
-                    }
-                });
+                renderThreadsList();
             } catch (e) {
-                document.getElementById('threads-list').innerHTML = "<p style='color: var(--text-muted);'>Ошибка загрузки тем.</p>";
+                document.getElementById('threads-container').innerHTML = "<p style='color: var(--text-muted);'>Не удалось загрузить темы.</p>";
             }
+        }
+
+        function filterCat(catName) {
+            if (currentFilter === catName) {
+                currentFilter = null;
+                document.getElementById('threads-title-text').textContent = "Лента тем";
+            } else {
+                currentFilter = catName;
+                document.getElementById('threads-title-text').textContent = "Темы в разделе: " + catName;
+            }
+            renderThreadsList();
+            document.getElementById('latest-threads').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderThreadsList() {
+            let container = document.getElementById('threads-container');
+            container.innerHTML = "";
+
+            let filtered = allFiles;
+            if (currentFilter) {
+                // Если фильтруем, проверим имя файла или просто выведем все
+                filtered = allFiles; 
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = "<p style='color: var(--text-muted);'>В этом разделе пока нет тем.</p>";
+                return;
+            }
+
+            filtered.forEach(file => {
+                let cleanName = decodeURIComponent(file.name.replace('.html', '').replace(/-/g, ' '));
+                container.innerHTML += `
+                    <div class="thread-item">
+                        <div>
+                            <strong>${cleanName}</strong>
+                        </div>
+                        <a href="threads/${file.name}" target="_blank">Открыть тему →</a>
+                    </div>
+                `;
+            });
         }
 
         async function createThread() {
@@ -117,9 +387,12 @@
             let text = document.getElementById('t-text').value.trim();
             let cat = document.getElementById('t-cat').value;
 
-            if (!title || !text) { alert("Заполните все поля!"); return; }
+            if (!title || !text) {
+                alert("Заполните заголовок и текст темы!");
+                return;
+            }
 
-            let token = prompt("Введите ваш GitHub Token (ghp_...):");
+            let token = prompt("Введите ваш личный GitHub Token (ghp_...):");
             if (!token) return;
 
             let slug = title.toLowerCase().replace(/[^a-z0-9а-яё]/gi, '-').replace(/-+/g, '-');
@@ -131,13 +404,23 @@
     <meta charset="UTF-8">
     <title>${title}</title>
     <meta name="yandex-verification" content="0bab8749f7716287" />
-    <style>body{font-family:sans-serif;max-width:800px;margin:40px auto;padding:20px;line-height:1.6;}h1{margin-bottom:10px;}.meta{color:gray;font-size:0.9rem;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:10px;}</style>
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; background: #f8f9fa; color: #0f172a; }
+        .box { background: #ffffff; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h1 { margin-bottom: 10px; font-size: 1.8rem; }
+        .meta { color: #64748b; font-size: 0.9rem; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        a { color: #22c55e; text-decoration: none; font-weight: 600; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-    <a href="../index.html">← На главную</a>
-    <h1>${title}</h1>
-    <div class="meta">Категория: ${cat}</div>
-    <div>${text.replace(/\n/g, '<br>')}</div>
+    <a href="../index.html">← На главную форума</a>
+    <div class="box" style="margin-top: 20px;">
+        <h1>${title}</h1>
+        <div class="meta">Категория: ${cat} • Автор: Администратор</div>
+        <div>${text.replace(/\n/g, '<br>')}</div>
+    </div>
 </body>
 </html>`;
 
@@ -145,7 +428,10 @@
 
             let res = await fetch(`https://api.github.com/repos/${REPO}/contents/${filename}`, {
                 method: "PUT",
-                headers: { "Authorization": `token ${token.trim()}`, "Content-Type": "application/json" },
+                headers: { 
+                    "Authorization": `token ${token.trim()}`, 
+                    "Content-Type": "application/json" 
+                },
                 body: JSON.stringify({
                     message: `Создана тема: ${title}`,
                     content: encodeBase64(htmlContent)
@@ -153,16 +439,15 @@
             });
 
             if (res.ok) {
-                alert("✅ Успех! Тема создана как отдельная страница в папке /threads/. Через минуту она появится на сайте.");
+                alert("✅ Успех! Тема опубликована. Через 1-2 минуты она появится в ленте, и у неё появится постоянная ссылка.");
                 document.getElementById('t-title').value = '';
                 document.getElementById('t-text').value = '';
-                loadThreads();
+                loadThreadsFromGitHub();
             } else {
-                alert("Ошибка сохранения. Проверьте токен.");
+                let err = await res.json();
+                alert("Ошибка сохранения: " + (err.message || "проверьте токен"));
             }
         }
-
-        loadThreads();
     </script>
 </body>
 </html>
