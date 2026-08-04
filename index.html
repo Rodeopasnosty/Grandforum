@@ -1,153 +1,167 @@
----
-layout: default
----
-<style>
-    .hero { padding-top: 140px; padding-bottom: 60px; text-align: center; }
-    .hero-title { font-size: 3rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px; }
-    .hero-title span { color: var(--accent); }
-    
-    .create-thread-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin-bottom: 32px; display: none; }
-    .form-group { margin-bottom: 12px; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; }
-    .form-group textarea { min-height: 120px; resize: vertical; }
-    
-    .threads-list { display: flex; flex-direction: column; gap: 12px; }
-    .thread-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
-    .thread-card:hover { border-color: var(--accent); transform: translateX(2px); }
-    .badge-new { background: #3b82f6; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; margin-right: 8px;}
-    .thread-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
-</style>
-
-<section class="hero container">
-    <h1 class="hero-title">Персональный блог-форум <span>GTA 5</span></h1>
-    <div id="admin-controls" style="margin-top: 20px;">
-        <button class="btn btn-secondary" onclick="loginAdmin()">Войти как Админ</button>
-    </div>
-</section>
-
-<div class="container">
-    <div class="create-thread-box" id="create-thread-form">
-        <h3 style="margin-bottom: 16px;">Создать новую запись</h3>
-        <div class="form-group"><select id="thread-category"><option>Общие обсуждения</option><option>GTA Online</option><option>RolePlay сообщество</option><option>Моды и Скрипты</option></select></div>
-        <div class="form-group"><input type="text" id="thread-title" placeholder="Заголовок"></div>
-        <div class="form-group"><textarea id="thread-text" placeholder="Текст темы (можно вставлять ссылки)..."></textarea></div>
-        <button class="btn btn-primary" onclick="submitNewPost()">Опубликовать</button>
-    </div>
-
-    <h2 style="margin-bottom: 20px;">Лента обсуждений</h2>
-    <div class="threads-list">
-        <!-- МАГИЯ JEKYLL: Автоматически выводит все файлы из папки _posts -->
-        {% for post in site.posts %}
-        <div class="thread-card" onclick="window.location.href='{{ site.baseurl }}{{ post.url }}'">
-            <div>
-                <h4 style="font-size: 1.1rem;"><span class="badge-new">Новое</span>{{ post.title }}</h4>
-                <div class="thread-meta">Категория: {{ post.category }} • {{ post.date | date: "%d.%m.%Y" }}</div>
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="yandex-verification" content="0bab8749f7716287" />
+    <title>GRAND FORUM - GTA V Premium Portal</title>
+    <style>
+        :root { --bg-primary: #f8f9fa; --bg-secondary: #ffffff; --text-primary: #0f172a; --text-secondary: #475569; --text-muted: #94a3b8; --accent: #22c55e; --accent-hover: #16a34a; --border-color: rgba(0, 0, 0, 0.06); }
+        [data-theme="dark"] { --bg-primary: #090d16; --bg-secondary: #111827; --text-primary: #f8fafc; --text-secondary: #cbd5e1; --text-muted: #64748b; --border-color: rgba(255, 255, 255, 0.06); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { background-color: var(--bg-primary); color: var(--text-primary); padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; }
+        .btn { padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; background: var(--accent); color: white; }
+        .btn:hover { background: var(--accent-hover); }
+        .box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); outline: none; }
+        .form-group textarea { min-height: 100px; }
+        .thread-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .thread-item a { color: var(--accent); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>GRAND FORUM</h1>
+            <div id="auth-area">
+                <button class="btn" onclick="loginAdmin()">Войти как Админ</button>
             </div>
-            <div style="font-size: 0.8rem; color: var(--accent); font-weight:600;">Читать →</div>
+        </header>
+
+        <div id="create-box" class="box" style="display: none;">
+            <h3>Создать новую тему</h3>
+            <div class="form-group" style="margin-top: 10px;">
+                <select id="t-cat"><option>Общие обсуждения</option><option>GTA Online</option></select>
+            </div>
+            <div class="form-group"><input type="text" id="t-title" placeholder="Заголовок темы"></div>
+            <div class="form-group"><textarea id="t-text" placeholder="Текст темы..."></textarea></div>
+            <button class="btn" onclick="createThread()">Опубликовать на GitHub</button>
         </div>
-        {% else %}
-        <div style="text-align:center; padding: 40px; color: var(--text-muted);">Записей пока нет. Создайте первую!</div>
-        {% endfor %}
+
+        <h2>Лента тем</h2>
+        <div id="threads-list" style="margin-top: 15px;">
+            <p style="color: var(--text-muted);">Загрузка тем...</p>
+        </div>
     </div>
-</div>
 
-<script>
-    const SECRET_ADMIN_CODE = "gta5creator2026";
-    let isAdminLoggedIn = localStorage.getItem('is_admin_logged_in') === 'true';
+    <script>
+        const REPO = "Rodeopasnosty/Grandforum"; // Ваш репозиторий
+        const ADMIN_PASS = "gta5creator2026";
+        let isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-    function checkAuth() {
-        if (isAdminLoggedIn) {
-            document.getElementById('admin-controls').innerHTML = '<button class="btn btn-secondary" onclick="logout()">Выйти</button>';
-            document.getElementById('create-thread-form').style.display = 'block';
-        } else {
-            document.getElementById('admin-controls').innerHTML = '<button class="btn btn-secondary" onclick="loginAdmin()">Войти как Админ</button>';
-            document.getElementById('create-thread-form').style.display = 'none';
-        }
-    }
-
-    function loginAdmin() {
-        if (prompt("Пароль:") === SECRET_ADMIN_CODE) {
-            localStorage.setItem('is_admin_logged_in', 'true');
-            isAdminLoggedIn = true;
-            checkAuth();
-        } else {
-            alert("Неверный пароль.");
-        }
-    }
-
-    function logout() {
-        localStorage.setItem('is_admin_logged_in', 'false');
-        isAdminLoggedIn = false;
-        checkAuth();
-    }
-
-    checkAuth();
-
-    // ОБНОВЛЕННАЯ ФУНКЦИЯ СОЗДАНИЯ ТЕМЫ
-    function submitNewPost() {
-        const title = document.getElementById('thread-title').value.trim();
-        let text = document.getElementById('thread-text').value.trim();
-        const category = document.getElementById('thread-category').value;
-
-        if (!title || !text) { alert('Заполните все поля!'); return; }
-
-        const GITHUB_TOKEN = prompt("🔒 Введите ваш секретный ключ GitHub (ghp_...):");
-        if (!GITHUB_TOKEN) return;
-
-        // Превращаем ссылки в тексте в кликабельные HTML теги перед сохранением
-        const urlRegex = /(https?:\/\/[^\s]+)/g;
-        text = text.replace(urlRegex, function(url) {
-            return `<a href="${url}" target="_blank">${url}</a>`;
-        });
-        
-        // Заменяем переносы строк на теги <br> для правильного отображения
-        text = text.replace(/\n/g, "<br>");
-
-        // Генерируем красивую ссылку из заголовка (транслит)
-        const a = {"а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ё":"e","ж":"zh","з":"z","и":"i","й":"y","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"h","ц":"c","ч":"ch","ш":"sh","щ":"sch","ъ":"","ы":"y","ь":"","э":"e","ю":"yu","я":"ya"};
-        let slug = title.toLowerCase().split('').map(char => a[char] || char).join('').replace(/[^a-z0-9]/gi, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-        if (!slug) slug = "post-" + Date.now();
-
-        // Формируем имя файла для папки _posts
-        const dateString = new Date().toISOString().split('T')[0];
-        const filename = `${dateString}-${slug}.md`;
-
-        // Формируем контент файла в формате Jekyll (Markdown + YAML)
-        const fileContent = `---
-layout: thread
-title: "${title}"
-category: "${category}"
----
-${text}`;
-
-        const url = `https://api.github.com/repos/Rodeopasnosty/Grandforum/contents/_posts/${filename}`;
-        
-        // Безопасная кодировка для русского языка
-        const encodeBase64 = (str) => btoa(unescape(encodeURIComponent(str)));
-
-        fetch(url, {
-            method: "PUT",
-            headers: {
-                "Authorization": `token ${GITHUB_TOKEN.trim()}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: `Создана новая тема: ${title}`,
-                content: encodeBase64(fileContent)
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.content) {
-                alert("✅ Успех! Тема сохранена как отдельная страница.\n\n⚠️ ВАЖНО: GitHub потребуется около 1-2 минут, чтобы собрать новую страницу и обновить сайт. Подождите пару минут и обновите эту страницу.");
-                document.getElementById('thread-title').value = '';
-                document.getElementById('thread-text').value = '';
+        function updateAuthUI() {
+            if (isAdmin) {
+                document.getElementById('auth-area').innerHTML = '<button class="btn" onclick="logout()">Выйти</button>';
+                document.getElementById('create-box').style.display = 'block';
             } else {
-                alert("Ошибка сохранения. Проверьте ключ.");
+                document.getElementById('auth-area').innerHTML = '<button class="btn" onclick="loginAdmin()">Войти как Админ</button>';
+                document.getElementById('create-box').style.display = 'none';
             }
-        })
-        .catch(err => alert("Ошибка соединения."));
-    }
-</script>
+        }
 
- 
+        function loginAdmin() {
+            if (prompt("Введите пароль администратора:") === ADMIN_PASS) {
+                localStorage.setItem('isAdmin', 'true');
+                isAdmin = true;
+                updateAuthUI();
+            } else {
+                alert("Неверный пароль!");
+            }
+        }
+
+        function logout() {
+            localStorage.setItem('isAdmin', 'false');
+            isAdmin = false;
+            updateAuthUI();
+        }
+
+        updateAuthUI();
+
+        // Загрузка списка тем прямо из репозитория GitHub через API
+        async function loadThreads() {
+            try {
+                let res = await fetch(`https://api.github.com/repos/${REPO}/contents/threads`);
+                let files = await res.json();
+                let listDiv = document.getElementById('threads-list');
+                listDiv.innerHTML = "";
+
+                if (!Array.isArray(files) || files.length === 0) {
+                    listDiv.innerHTML = "<p style='color: var(--text-muted);'>Тем пока нет.</p>";
+                    return;
+                }
+
+                files.forEach(file => {
+                    if (file.name.endsWith('.html')) {
+                        let title = decodeURIComponent(file.name.replace('.html', '').replace(/-/g, ' '));
+                        listDiv.innerHTML += `
+                            <div class="thread-item">
+                                <div>
+                                    <strong>${title}</strong>
+                                </div>
+                                <a href="threads/${file.name}" target="_blank">Открыть тему →</a>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (e) {
+                document.getElementById('threads-list').innerHTML = "<p style='color: var(--text-muted);'>Ошибка загрузки тем.</p>";
+            }
+        }
+
+        async function createThread() {
+            let title = document.getElementById('t-title').value.trim();
+            let text = document.getElementById('t-text').value.trim();
+            let cat = document.getElementById('t-cat').value;
+
+            if (!title || !text) { alert("Заполните все поля!"); return; }
+
+            let token = prompt("Введите ваш GitHub Token (ghp_...):");
+            if (!token) return;
+
+            let slug = title.toLowerCase().replace(/[^a-z0-9а-яё]/gi, '-').replace(/-+/g, '-');
+            let filename = `threads/${slug}.html`;
+
+            let htmlContent = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    <meta name="yandex-verification" content="0bab8749f7716287" />
+    <style>body{font-family:sans-serif;max-width:800px;margin:40px auto;padding:20px;line-height:1.6;}h1{margin-bottom:10px;}.meta{color:gray;font-size:0.9rem;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:10px;}</style>
+</head>
+<body>
+    <a href="../index.html">← На главную</a>
+    <h1>${title}</h1>
+    <div class="meta">Категория: ${cat}</div>
+    <div>${text.replace(/\n/g, '<br>')}</div>
+</body>
+</html>`;
+
+            let encodeBase64 = (str) => btoa(unescape(encodeURIComponent(str)));
+
+            let res = await fetch(`https://api.github.com/repos/${REPO}/contents/${filename}`, {
+                method: "PUT",
+                headers: { "Authorization": `token ${token.trim()}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: `Создана тема: ${title}`,
+                    content: encodeBase64(htmlContent)
+                })
+            });
+
+            if (res.ok) {
+                alert("✅ Успех! Тема создана как отдельная страница в папке /threads/. Через минуту она появится на сайте.");
+                document.getElementById('t-title').value = '';
+                document.getElementById('t-text').value = '';
+                loadThreads();
+            } else {
+                alert("Ошибка сохранения. Проверьте токен.");
+            }
+        }
+
+        loadThreads();
+    </script>
+</body>
+</html>
