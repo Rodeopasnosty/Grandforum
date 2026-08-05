@@ -354,100 +354,115 @@
             document.getElementById('latest-threads').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function renderThreadsList() {
-            let container = document.getElementById('threads-container');
-            let titleEl = document.getElementById('threads-title-text');
-            container.innerHTML = "";
+        -function renderThreadsList() {
+    let container = document.getElementById('threads-container');
+    let titleEl = document.getElementById('threads-title-text');
+    container.innerHTML = "";
 
-            let filtered = allFiles;
-            
-            // 1. Полностью сбрасываем конфликтующие стили у родителя, чтобы старые полоски исчезли
-            if (titleEl.parentElement) {
-                titleEl.parentElement.className = ""; 
-                titleEl.parentElement.style.display = "block";
-                titleEl.parentElement.style.margin = "0 0 20px 0";
-                titleEl.parentElement.style.padding = "0";
-            }
+    let filtered = allFiles;
+    
+    if (titleEl.parentElement) {
+        titleEl.parentElement.className = ""; 
+        titleEl.parentElement.style.display = "block";
+        titleEl.parentElement.style.margin = "0 0 20px 0";
+        titleEl.parentElement.style.padding = "0";
+    }
 
-            // 2. Формируем чистый заголовок с двумя горизонтальными полосками, которые не касаются текста
-            let titleHTML = '';
-            
-            if (currentFilter) {
-                titleHTML = `
-                    <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                        <!-- Блок с двумя полосками (отделен от текста) -->
-                        <div style="display: flex; gap: 6px;">
-                            <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
-                            <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
-                        </div>
-                        
-                        <!-- Блок с текстом и кнопкой (в одну строчку) -->
-                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
-                            <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); line-height: 1.2; margin: 0;">
-                                Темы раздела: <span style="color: var(--accent);">${currentFilter}</span>
-                            </div>
-                            <button class="btn btn-secondary" style="padding: 6px 16px; font-size: 0.85rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
-                        </div>
-                    </div>`;
-            } else {
-                titleHTML = `
-                    <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                        <!-- Блок с двумя полосками (отделен от текста) -->
-                        <div style="display: flex; gap: 6px;">
-                            <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
-                            <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
-                        </div>
-                        
-                        <!-- Блок с текстом -->
-                        <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-                            Лента тем
-                        </div>
-                    </div>`;
-            }
-            
-            titleEl.innerHTML = titleHTML;
+    // --- НОВАЯ ЛОГИКА ФИЛЬТРАЦИИ ---
+    if (currentFilter) {
+        // Делаем из названия раздела точно такой же тег, как при создании темы
+        let filterPrefix = currentFilter.toLowerCase().replace(/[^a-z0-9а-яё]/gi, '');
+        // Оставляем только те файлы, название которых начинается на этот тег
+        filtered = allFiles.filter(file => file.name.startsWith(filterPrefix + '_'));
+    }
 
-            // 3. Блок сообщения строго изолирован и сдвинут вниз
-            if (filtered.length === 0) {
-                container.innerHTML = "<div style='text-align: center; padding: 30px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%; margin-top: 10px; display: block;'>В этом разделе пока нет тем.</div>";
-                return;
-            }
-
-            filtered.forEach(file => {
-                let cleanName = decodeURIComponent(file.name.replace('.html', '').replace(/-/g, ' '));
-                container.innerHTML += `
-                    <div class="thread-item">
-                        <div>
-                            <strong>${cleanName}</strong>
-                        </div>
-                        <a href="threads/${file.name}" target="_blank">Открыть тему →</a>
+    let titleHTML = '';
+    
+    if (currentFilter) {
+        titleHTML = `
+            <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                <div style="display: flex; gap: 6px;">
+                    <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
+                    <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                    <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); line-height: 1.2; margin: 0;">
+                        Темы раздела: <span style="color: var(--accent);">${currentFilter}</span>
                     </div>
-                `;
-            });
+                    <button class="btn btn-secondary" style="padding: 6px 16px; font-size: 0.85rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
+                </div>
+            </div>`;
+    } else {
+        titleHTML = `
+            <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                <div style="display: flex; gap: 6px;">
+                    <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
+                    <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
+                </div>
+                
+                <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                    Лента тем
+                </div>
+            </div>`;
+    }
+    
+    titleEl.innerHTML = titleHTML;
+
+    if (filtered.length === 0) {
+        container.innerHTML = "<div style='text-align: center; padding: 30px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%; margin-top: 10px; display: block;'>В этом разделе пока нет тем.</div>";
+        return;
+    }
+
+    filtered.forEach(file => {
+        // --- ОЧИСТКА ИМЕНИ ФАЙЛА ДЛЯ ПОЛЬЗОВАТЕЛЕЙ ---
+        let rawName = file.name.replace('.html', '');
+        
+        // 1. Если в имени есть категория (отделена символом _), прячем её
+        if (rawName.includes('_')) {
+            rawName = rawName.substring(rawName.indexOf('_') + 1);
         }
+        
+        // 2. Прячем уникальный числовой ID (последние 13 цифр в названии)
+        rawName = rawName.replace(/-[0-9]{13}$/, '');
+        
+        // 3. Заменяем дефисы на пробелы
+        let cleanName = decodeURIComponent(rawName.replace(/-/g, ' '));
+
+        container.innerHTML += `
+            <div class="thread-item">
+                <div>
+                    <strong>${cleanName}</strong>
+                </div>
+                <a href="threads/${file.name}" target="_blank">Открыть тему →</a>
+            </div>
+        `;
+    });
+}
 
        async function createThread() {
-            let title = document.getElementById('t-title').value.trim();
-            let text = document.getElementById('t-text').value.trim();
-            let cat = document.getElementById('t-cat').value;
+    let title = document.getElementById('t-title').value.trim();
+    let text = document.getElementById('t-text').value.trim();
+    let cat = document.getElementById('t-cat').value;
 
-            if (!title || !text) {
-                alert("Заполните заголовок и текст темы!");
-                return;
-            }
+    if (!title || !text) {
+        alert("Заполните заголовок и текст темы!");
+        return;
+    }
 
-            let token = prompt("Введите ваш личный GitHub Token (ghp_...):");
-            if (!token) return;
+    let token = prompt("Введите ваш личный GitHub Token (ghp_...):");
+    if (!token) return;
 
-            // Генерируем уникальный номер на основе текущего времени
-            let uniqueId = Date.now();
+    let uniqueId = Date.now();
+    let slug = title.toLowerCase().replace(/[^a-z0-9а-яё]/gi, '-').replace(/-+/g, '-');
+    
+    // НОВОЕ: Превращаем категорию в тег для файла (например "Моды и Скрипты" -> "модыискрипты")
+    let catPrefix = cat.toLowerCase().replace(/[^a-z0-9а-яё]/gi, '');
+    
+    // НОВОЕ: Имя файла теперь содержит категорию: threads/категория_название-12345.html
+    let filename = `threads/${catPrefix}_${slug}-${uniqueId}.html`;
 
-            let slug = title.toLowerCase().replace(/[^a-z0-9а-яё]/gi, '-').replace(/-+/g, '-');
-            
-            // Добавляем уникальный номер к имени файла
-            let filename = `threads/${slug}-${uniqueId}.html`;
-
-            let htmlContent = `<!DOCTYPE html>
+    let htmlContent = `<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -473,19 +488,21 @@
 </body>
 </html>`;
 
-            let encodeBase64 = (str) => btoa(unescape(encodeURIComponent(str)));
+    let encodeBase64 = (str) => btoa(unescape(encodeURIComponent(str)));
 
-            let res = await fetch(`https://api.github.com/repos/${REPO}/contents/${filename}`, {
-                method: "PUT",
-                headers: { 
-                    "Authorization": `token ${token.trim()}`, 
-                    "Content-Type": "application/json" 
-                },
-                body: JSON.stringify({
-                    message: `Создана тема: ${title}`,
-                    content: encodeBase64(htmlContent)
-                })
-            });
+    let res = await fetch(`https://api.github.com/repos/${REPO}/contents/${filename}`, {
+        method: "PUT",
+        headers: { 
+            "Authorization": `token ${token.trim()}`, 
+            "Content-Type": "application/json" 
+        },
+        body: JSON.stringify({
+            message: `Создана тема: ${title}`,
+            content: encodeBase64(htmlContent)
+        })
+    });
+    
+    // (Оставьте ниже ваш код обработки ответа, например if(res.ok) { ... })
 
             if (res.ok) {
                 alert("✅ Успех! Тема опубликована. Через 1-2 минуты она появится в ленте, и у неё появится постоянная ссылка.");
