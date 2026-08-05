@@ -354,54 +354,60 @@
             document.getElementById('latest-threads').scrollIntoView({ behavior: 'smooth' });
         }
 
-        -function renderThreadsList() {
+        function renderThreadsList() {
     let container = document.getElementById('threads-container');
     let titleEl = document.getElementById('threads-title-text');
     container.innerHTML = "";
 
-    let filtered = allFiles;
+    // Если переменная allFiles не успела загрузиться, используем пустой массив, чтобы избежать ошибки
+    let filtered = (typeof allFiles !== 'undefined') ? allFiles : [];
     
+    // Сбрасываем старые стили родителя, которые вызывали наложения
     if (titleEl.parentElement) {
         titleEl.parentElement.className = ""; 
         titleEl.parentElement.style.display = "block";
-        titleEl.parentElement.style.margin = "0 0 20px 0";
+        titleEl.parentElement.style.margin = "0";
         titleEl.parentElement.style.padding = "0";
     }
 
-    // --- НОВАЯ ЛОГИКА ФИЛЬТРАЦИИ ---
     if (currentFilter) {
-        // Делаем из названия раздела точно такой же тег, как при создании темы
         let filterPrefix = currentFilter.toLowerCase().replace(/[^a-z0-9а-яё]/gi, '');
-        // Оставляем только те файлы, название которых начинается на этот тег
-        filtered = allFiles.filter(file => file.name.startsWith(filterPrefix + '_'));
+        filtered = filtered.filter(file => file.name.startsWith(filterPrefix + '_'));
     }
 
     let titleHTML = '';
     
     if (currentFilter) {
         titleHTML = `
-            <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                <div style="display: flex; gap: 6px;">
-                    <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
-                    <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
-                </div>
+            <!-- Главный контейнер заголовка с отступом снизу margin-bottom: 24px -->
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; width: 100%; margin-bottom: 24px;">
                 
-                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
-                    <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); line-height: 1.2; margin: 0;">
+                <!-- Левая часть: 2 зеленые полоски + Текст (строго горизонтально) -->
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <!-- Две вертикальные полоски -->
+                    <div style="display: flex; gap: 4px;">
+                        <div style="width: 6px; height: 24px; background: var(--accent); border-radius: 4px;"></div>
+                        <div style="width: 6px; height: 24px; background: var(--accent); border-radius: 4px;"></div>
+                    </div>
+                    <!-- Текст заголовка (не касается полосок благодаря gap: 16px) -->
+                    <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin: 0; line-height: 1.2;">
                         Темы раздела: <span style="color: var(--accent);">${currentFilter}</span>
                     </div>
-                    <button class="btn btn-secondary" style="padding: 6px 16px; font-size: 0.85rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
                 </div>
+                
+                <!-- Правая часть: Кнопка сброса -->
+                <button class="btn btn-secondary" style="padding: 6px 16px; font-size: 0.85rem;" onclick="currentFilter = null; renderThreadsList();">Показать все темы</button>
             </div>`;
     } else {
         titleHTML = `
-            <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                <div style="display: flex; gap: 6px;">
-                    <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
-                    <div style="width: 20px; height: 6px; background: var(--accent); border-radius: 4px;"></div>
+            <div style="display: flex; align-items: center; gap: 16px; width: 100%; margin-bottom: 24px;">
+                <!-- Две вертикальные полоски -->
+                <div style="display: flex; gap: 4px;">
+                    <div style="width: 6px; height: 24px; background: var(--accent); border-radius: 4px;"></div>
+                    <div style="width: 6px; height: 24px; background: var(--accent); border-radius: 4px;"></div>
                 </div>
-                
-                <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                <!-- Текст заголовка -->
+                <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin: 0; line-height: 1.2;">
                     Лента тем
                 </div>
             </div>`;
@@ -409,24 +415,19 @@
     
     titleEl.innerHTML = titleHTML;
 
+    // Блок сообщения об ошибке/отсутствии тем. Он выводится как display: block, поэтому никогда не налезет на заголовок.
     if (filtered.length === 0) {
-        container.innerHTML = "<div style='text-align: center; padding: 30px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%; margin-top: 10px; display: block;'>В этом разделе пока нет тем.</div>";
+        container.innerHTML = "<div style='text-align: center; padding: 30px 20px; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); width: 100%; display: block;'>В этом разделе пока нет тем (или не удалось загрузить темы).</div>";
         return;
     }
 
     filtered.forEach(file => {
-        // --- ОЧИСТКА ИМЕНИ ФАЙЛА ДЛЯ ПОЛЬЗОВАТЕЛЕЙ ---
         let rawName = file.name.replace('.html', '');
         
-        // 1. Если в имени есть категория (отделена символом _), прячем её
         if (rawName.includes('_')) {
             rawName = rawName.substring(rawName.indexOf('_') + 1);
         }
-        
-        // 2. Прячем уникальный числовой ID (последние 13 цифр в названии)
         rawName = rawName.replace(/-[0-9]{13}$/, '');
-        
-        // 3. Заменяем дефисы на пробелы
         let cleanName = decodeURIComponent(rawName.replace(/-/g, ' '));
 
         container.innerHTML += `
@@ -439,7 +440,6 @@
         `;
     });
 }
-
        async function createThread() {
     let title = document.getElementById('t-title').value.trim();
     let text = document.getElementById('t-text').value.trim();
