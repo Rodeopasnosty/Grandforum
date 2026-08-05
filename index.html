@@ -426,7 +426,7 @@
             });
         }
 
-        async function createThread() {
+       async function createThread() {
             let title = document.getElementById('t-title').value.trim();
             let text = document.getElementById('t-text').value.trim();
             let cat = document.getElementById('t-cat').value;
@@ -439,8 +439,13 @@
             let token = prompt("Введите ваш личный GitHub Token (ghp_...):");
             if (!token) return;
 
+            // Генерируем уникальный номер на основе текущего времени
+            let uniqueId = Date.now();
+
             let slug = title.toLowerCase().replace(/[^a-z0-9а-яё]/gi, '-').replace(/-+/g, '-');
-            let filename = `threads/${slug}.html`;
+            
+            // Добавляем уникальный номер к имени файла
+            let filename = `threads/${slug}-${uniqueId}.html`;
 
             let htmlContent = `<!DOCTYPE html>
 <html lang="ru">
