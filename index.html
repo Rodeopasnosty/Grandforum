@@ -430,12 +430,15 @@
         rawName = rawName.replace(/-[0-9]{13}$/, '');
         let cleanName = decodeURIComponent(rawName.replace(/-/g, ' '));
 
+        // Кодируем имя файла для ссылки, чтобы GitHub Pages точно понял русский язык и спецсимволы
+        let safeUrl = encodeURIComponent(file.name);
+
         container.innerHTML += `
             <div class="thread-item">
                 <div>
                     <strong>${cleanName}</strong>
                 </div>
-                <a href="threads/${file.name}" target="_blank">Открыть тему →</a>
+                <a href="threads/${safeUrl}" target="_blank">Открыть тему →</a>
             </div>
         `;
     });
