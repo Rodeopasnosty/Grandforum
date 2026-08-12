@@ -508,19 +508,56 @@
             content: encodeBase64(htmlContent)
         })
     });
-    
-    // (Оставьте ниже ваш код обработки ответа, например if(res.ok) { ... })
 
-            if (res.ok) {
-                alert("✅ Успех! Тема опубликована. Через 1-2 минуты она появится в ленте, и у неё появится постоянная ссылка.");
-                document.getElementById('t-title').value = '';
-                document.getElementById('t-text').value = '';
-                loadThreadsFromGitHub();
-            } else {
-                let err = await res.json();
-                alert("Ошибка сохранения: " + (err.message || "проверьте токен"));
+    if (res.ok) {
+        // --- 1. Автоматически обновляем threads.json ---
+        try {
+            let pureFileName = filename.split('/').pop(); 
+
+            // Запрашиваем текущий threads.json с GitHub (нужен его sha)
+            let jsonRes = await fetch(`https://api.github.com/repos/${REPO}/contents/threads.json`, {
+                headers: { "Authorization": `token ${token.trim()}` }
+            });
+
+            if (jsonRes.ok) {
+                let jsonFileData = await jsonRes.json();
+                let currentContent = JSON.parse(decodeURIComponent(escape(atob(jsonFileData.content))));
+
+                // Добавляем имя нового файла в начало списка
+                if (!currentContent.includes(pureFileName)) {
+                    currentContent.unshift(pureFileName);
+                }
+
+                let updatedBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentContent, null, 2))));
+
+                // Перезаписываем threads.json
+                await fetch(`https://api.github.com/repos/${REPO}/contents/threads.json`, {
+                    method: "PUT",
+                    headers: { 
+                        "Authorization": `token ${token.trim()}`, 
+                        "Content-Type": "application/json" 
+                    },
+                    body: JSON.stringify({
+                        message: `Добавлена тема в список: ${pureFileName}`,
+                        content: updatedBase64,
+                        sha: jsonFileData.sha
+                    })
+                });
             }
+        } catch (jsonErr) {
+            console.error("Ошибка при автообновлении threads.json:", jsonErr);
         }
+
+        // --- 2. Сообщение и очистка формы ---
+        alert("✅ Успех! Тема опубликована. Через 1-2 минуты она появится в ленте, и у неё появится постоянная ссылка.");
+        document.getElementById('t-title').value = '';
+        document.getElementById('t-text').value = '';
+        loadThreadsFromGitHub();
+    } else {
+        let err = await res.json();
+        alert("Ошибка сохранения: " + (err.message || "проверьте токен"));
+    }
+}
     </script>
 </body>
 </html>
