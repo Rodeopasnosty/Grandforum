@@ -327,20 +327,24 @@
         }
 
         async function loadThreadsFromGitHub() {
-            try {
-                let res = await fetch(`https://api.github.com/repos/${REPO}/contents/threads`);
-                let files = await res.json();
-                
-                if (Array.isArray(files)) {
-                    allFiles = files.filter(f => f.name.endsWith('.html') && f.name !== '.gitkeep');
-                } else {
-                    allFiles = [];
-                }
-                renderThreadsList();
-            } catch (e) {
-                document.getElementById('threads-container').innerHTML = "<p style='color: var(--text-muted);'>Не удалось загрузить темы.</p>";
-            }
+    try {
+        // Загружаем наш локальный список вместо api.github.com (без лимитов и ошибок CORS)
+        let res = await fetch('./threads.json');
+        let files = await res.json();
+        
+        if (Array.isArray(files)) {
+            // Преобразуем строки из threads.json в объекты { name: "имя_файла.html" },
+            // чтобы весь ваш остальной код renderThreadsList() работал без переделок
+            allFiles = files.map(f => typeof f === 'string' ? { name: f } : f)
+                            .filter(f => f.name.endsWith('.html') && f.name !== '.gitkeep');
+        } else {
+            allFiles = [];
         }
+        renderThreadsList();
+    } catch (e) {
+        document.getElementById('threads-container').innerHTML = "<p style='color: var(--text-muted);'>Не удалось загрузить темы.</p>";
+    }
+}
 
         function filterCat(catName) {
             if (currentFilter === catName) {
